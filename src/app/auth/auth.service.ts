@@ -53,9 +53,7 @@ export class AuthService {
 
         console.log('AuthService err: ', err);
       },
-      complete: () => {
-        console.log('completed login request!');
-      },
+      complete: () => {},
     });
   }
 

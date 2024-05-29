@@ -1,5 +1,157 @@
 <div
-  class="flex container flex-col bg-light h-full pt-3 px-3 mt-2 rounded-md overflow-scroll overflow-y-auto overflow-x-hidden"
+  class="flex flex-col bg-light rounded-md h-full w-full px-5 pt-7 overflow-scroll overflow-x-hidden overflow-y-auto"
 >
-  <h1>This is a category component!</h1>
+  @if(mode === 'no-edit') {
+  <h1 class="text-3xl text-dark-purple mb-5 font-bold">Categories</h1>
+
+  <form
+    [formGroup]="categoryForm"
+    class="text-light-purple"
+    (ngSubmit)="onSubmitCategory()"
+  >
+    <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-3">
+        <p class="font-medium text-dark-purple text-xl">Create new category</p>
+        <div class="flex gap-3">
+          <div>
+            <input
+              id="categoryName"
+              formControlName="categoryName"
+              placeholder="Category name"
+              class="px-2 rounded w-56 text-base font-medium py-1 border-2 border-gray-300"
+              type="text"
+            />
+          </div>
+          <div>
+            <select
+              formControlName="parent"
+              class="max-w-fit w-56 text-base text-light-purple rounded font-medium h-9 px-6 py-1 border-2 border-gray-300"
+            >
+              <option value="null">No parent category</option>
+              @for(category of categories; track category.id; let i = $index) {
+
+              <option [value]="category.id">
+                {{ category.categoryName }}
+              </option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-base">Properties</label>
+        <button
+          type="button"
+          (click)="onAddProperty()"
+          class="px-3 py-2 text-white text-base border-gray-300 w-fit bg-light-purple hover:bg-dark-purple font-medium rounded-md"
+        >
+          Add new property
+        </button>
+
+        <div formArrayName="properties">
+          @for(propertyControl of propertyControls.controls; track
+          propertyControls; let i = $index) {
+          <div [formGroupName]="i">
+            <div class="flex gap-2 my-2">
+              <input
+                placeholder="Property"
+                class="mb-4"
+                formControlName="property"
+                class="px-2 font-medium rounded py-1 border-2 border-gray-300"
+                type="text"
+              />
+              <input
+                placeholder="Values"
+                formControlName="values"
+                class="px-3 rounded font-medium py-1 border-2 border-gray-300"
+                type="text"
+              />
+              <div class="flex items-center">
+                <mat-icon
+                  (click)="onDeletePropertyControl(i)"
+                  class="cursor-pointer text-red-500"
+                  aria-hidden="false"
+                  aria-label="Example delete icon"
+                  fontIcon="delete"
+                ></mat-icon>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          (click)="onCancel()"
+          type="button"
+          class="text-base font-medium px-3 py-2 rounded-md mb-4 w-fit text-white bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
+        >
+          cancel
+        </button>
+        <button
+          [disabled]="categoryForm.invalid"
+          type="submit"
+          class="text-base font-medium mb-4 w-fit text-white px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </form>
+  <div class="shadow-lg">
+    <div class="flex flex-col">
+      <div class="flex">
+        <div class="px-2 w-1/2 py-2 bg-blue-300">
+          <p class="text-base text-dark-purple font-bold">CATEGORY NAME</p>
+        </div>
+        <div class="px-2 w-full py-2 pl-4 bg-blue-300">
+          <p class="text-base text-dark-purple pl-5 font-bold">
+            PARENT CATEGORY
+          </p>
+        </div>
+      </div>
+
+      @for(category of categories; track category.id; let i = $index) {
+      <div>
+        @if(i !== 0) {
+        <div class="flex px-3 border-b-2 py-2 items-center justify-between">
+          <p class="font-medium text-base text-light-purple">
+            {{ category.categoryName }}
+          </p>
+          <p class="font-medium text-base text-light-purple">
+            {{
+              category.parent
+                ? category.parent.categoryName
+                : "No parent Category"
+            }}
+          </p>
+
+          <div class="flex gap-3">
+            <mat-icon
+              (click)="onEditCategory(category)"
+              class="cursor-pointer w-10"
+              aria-hidden="false"
+              aria-label="Example edit_note icon"
+              fontIcon="edit_note"
+            ></mat-icon>
+            <mat-icon
+              (click)="onDeleteCategory(i, category.id!)"
+              class="cursor-pointer text-red-500"
+              aria-hidden="false"
+              aria-label="Example delete icon"
+              fontIcon="delete"
+            ></mat-icon>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  } @if(mode === 'edit') {
+  <router-outlet></router-outlet>
+
+  }
 </div>
