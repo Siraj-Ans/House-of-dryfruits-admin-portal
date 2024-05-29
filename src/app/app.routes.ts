@@ -7,6 +7,7 @@ import { CategoryComponent } from './admin-panel/category/category.component';
 import { OrderComponent } from './admin-panel/order/order.component';
 import { AdminComponent } from './admin-panel/admin/admin.component';
 import { SettingComponent } from './admin-panel/setting/setting.component';
+import { CategoryEditComponent } from './admin-panel/category/category-edit/category-edit.component';
 import { AuthComponent } from './auth/auth.component';
 
 import { authGuard } from './auth/auth.guard';
@@ -26,7 +27,17 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'products', component: ProductComponent },
-      { path: 'categories', component: CategoryComponent },
+      {
+        path: 'categories',
+        component: CategoryComponent,
+        children: [
+          {
+            path: 'edit-category/:id',
+            component: CategoryEditComponent,
+            canActivate: [authGuard],
+          },
+        ],
+      },
       { path: 'orders', component: OrderComponent },
       { path: 'admins', component: AdminComponent },
       { path: 'settings', component: SettingComponent },

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from './auth.service';
 
@@ -11,17 +12,24 @@ import { AuthService } from './auth.service';
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   errorMessage: undefined | string;
+  errorMessageSubscription!: Subscription;
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.authService.updatedError.subscribe((errMsg) => {
-      this.errorMessage = errMsg;
-    });
+    this.errorMessageSubscription = this.authService.updatedError.subscribe(
+      (errMsg) => {
+        this.errorMessage = errMsg;
+      }
+    );
   }
 
   onLogin(form: NgForm): void {
     this.authService.logIn(form.value.userName, form.value.password);
+  }
+
+  ngOnDestroy(): void {
+    this.errorMessageSubscription.unsubscribe();
   }
 }
