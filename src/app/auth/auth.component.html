@@ -37,13 +37,20 @@
           type="text"
         />
       </div>
-      <button
-        type="submit"
-        [disabled]="form.invalid"
-        class="px-3 py-1 font-medium text-light rounded-md bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 transition-all duration-500"
-      >
-        Submit
-      </button>
+      <div class="flex items-center gap-2 justify-between">
+        <button
+          type="submit"
+          [disabled]="form.invalid"
+          class="px-3 py-1 w-full font-medium text-light rounded-md bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 transition-all duration-500"
+        >
+          Submit
+        </button>
+        @if(loading) {
+        <app-load-spinner class=""></app-load-spinner>
+
+        }
+      </div>
+
       @if(errorMessage) {
       <p class="text-red-600 font-bold italic">{{ errorMessage }}</p>
       }

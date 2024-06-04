@@ -20,13 +20,19 @@ import { Category } from './category.model';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, MatIconModule, RouterModule],
   templateUrl: './category.component.html',
+  styleUrl: './category.component.css',
 })
 export class CategoryComponent implements OnDestroy {
   mode = 'no-edit';
-  selectedCategoryId = null;
+  addCategoryErrorMessage: undefined | string;
+  deleteCategoryErrorMessage: undefined | string;
+  selectedCategoryId: undefined | string;
   categories: Category[] = [];
   categoryForm!: FormGroup;
-  categoriesSubscription!: Subscription;
+  categoriesSubscription: undefined | Subscription;
+  addCategoryErrorMessageSubscription: undefined | Subscription;
+  deleteCategoryErrorMessageSubscription: undefined | Subscription;
+  editModeSubscription: undefined | Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -38,20 +44,34 @@ export class CategoryComponent implements OnDestroy {
   ngOnInit(): void {
     this.categoryService.getCategories();
 
-    this.categoriesSubscription =
-      this.categoryService.updatedCategories.subscribe((categories) => {
-        this.categories = categories;
-      });
-
     this.categoryForm = this.fb.group({
       categoryName: [null, Validators.required],
       parent: [null],
       properties: this.fb.array([]),
     });
 
-    this.categoryService.editMode.subscribe((editMode) => {
-      this.mode = editMode;
-    });
+    this.addCategoryErrorMessageSubscription =
+      this.categoryService.updateAddCategoryErrorMessage.subscribe((errMsg) => {
+        this.addCategoryErrorMessage = errMsg;
+      });
+
+    this.deleteCategoryErrorMessageSubscription =
+      this.categoryService.updateDeleteCategoryErrorMessage.subscribe(
+        (errMsg) => {
+          this.deleteCategoryErrorMessage = errMsg;
+        }
+      );
+
+    this.categoriesSubscription =
+      this.categoryService.updatedCategories.subscribe((categories) => {
+        this.categories = categories;
+      });
+
+    this.editModeSubscription = this.categoryService.updatedEditMode.subscribe(
+      (editMode) => {
+        this.mode = editMode;
+      }
+    );
   }
 
   get propertyControls() {
@@ -71,10 +91,14 @@ export class CategoryComponent implements OnDestroy {
     this.categoryForm.reset();
   }
 
-  onEditCategory(category: Category): void {
-    this.mode = 'edit';
+  onEditCategory(category: Category, index: number): void {
+    this.categoryService.setEditMode('edit');
+    this.categoryService.updatedEditMode.next('edit');
 
-    this.categoryService.selectedCategory.next(category);
+    this.categoryService.selectedCategory.next({
+      category: category,
+      index: index,
+    });
 
     this.router.navigate(['edit-category', category.id], {
       relativeTo: this.activatedRoute,
@@ -102,7 +126,6 @@ export class CategoryComponent implements OnDestroy {
     let category: Category;
 
     if (this.categoryForm.value.parent) {
-      console.log('parent');
       category = new Category(
         null,
         this.categoryForm.value.categoryName,
@@ -118,8 +141,8 @@ export class CategoryComponent implements OnDestroy {
     }
     this.categoryService.addCategory(category);
 
-    this.categoryForm.get('categoryName')!.setValue(null);
     (<FormArray>this.categoryForm.get('properties')).clear();
+    this.categoryForm.reset();
   }
 
   onDeletePropertyControl(index: number): void {
@@ -127,6 +150,9 @@ export class CategoryComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.categoriesSubscription.unsubscribe();
+    this.categoriesSubscription?.unsubscribe();
+    this.addCategoryErrorMessageSubscription?.unsubscribe();
+    this.deleteCategoryErrorMessageSubscription?.unsubscribe();
+    this.editModeSubscription?.unsubscribe();
   }
 }

@@ -7,6 +7,7 @@ import {
   CreateCategoryResponse,
   DeleteCategoryResponse,
   FetchCategoriesResponse,
+  UpdateCategoryResponse,
 } from './CategoryRes.model';
 
 @Injectable({ providedIn: 'root' })
@@ -125,5 +126,10 @@ export class CategoryDataStorageService {
     );
   }
 
-  updateCategory(category: Category): void {}
+  updateCategory(category: Category): Observable<UpdateCategoryResponse> {
+    return this.http.put<UpdateCategoryResponse>(
+      'http://localhost:3000/api/categories/updateCategory/',
+      category
+    );
+  }
 }

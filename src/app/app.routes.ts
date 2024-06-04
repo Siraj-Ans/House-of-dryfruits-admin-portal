@@ -8,9 +8,12 @@ import { OrderComponent } from './admin-panel/order/order.component';
 import { AdminComponent } from './admin-panel/admin/admin.component';
 import { SettingComponent } from './admin-panel/setting/setting.component';
 import { CategoryEditComponent } from './admin-panel/category/category-edit/category-edit.component';
+import { EditProductComponent } from './admin-panel/product/product-edit/product-edit.component';
 import { AuthComponent } from './auth/auth.component';
 
 import { authGuard } from './auth/auth.guard';
+import { unSavedChangesGuard } from './admin-panel/category/unSavedChanges.guard';
+import { canActivateEditComponent } from './admin-panel/category/category-edit/canActivateEditComponet.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'adminpanel/dashboard', pathMatch: 'full' },
@@ -26,7 +29,17 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'products', component: ProductComponent },
+      {
+        path: 'products',
+        component: ProductComponent,
+        children: [
+          { path: 'create-product', component: EditProductComponent },
+          {
+            path: 'edit-product/:id',
+            component: EditProductComponent,
+          },
+        ],
+      },
       {
         path: 'categories',
         component: CategoryComponent,
@@ -34,7 +47,8 @@ export const routes: Routes = [
           {
             path: 'edit-category/:id',
             component: CategoryEditComponent,
-            canActivate: [authGuard],
+            canActivate: [authGuard, canActivateEditComponent],
+            canDeactivate: [unSavedChangesGuard],
           },
         ],
       },

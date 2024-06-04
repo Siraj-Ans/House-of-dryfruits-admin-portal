@@ -10,7 +10,8 @@ import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  updatedError = new Subject<string>();
+  updateError = new Subject<string>();
+  updateLoadingStatus = new Subject<boolean>();
   private token: undefined | null | string;
   private isAuthenticated = false;
   private timerExpiration: any;
@@ -23,6 +24,7 @@ export class AuthService {
   ) {}
 
   logIn(userName: string, password: string): void {
+    this.updateLoadingStatus.next(true);
     this.authDataStorageService.logIn(userName, password).subscribe({
       next: (res) => {
         if (res.token) {
@@ -49,11 +51,15 @@ export class AuthService {
         }
       },
       error: (err) => {
-        this.updatedError.next(err.error.message);
+        this.updateLoadingStatus.next(false);
+        this.updateError.next(err.error.message);
 
         console.log('AuthService err: ', err);
       },
-      complete: () => {},
+      complete: () => {
+        console.log('c');
+        this.updateLoadingStatus.next(false);
+      },
     });
   }
 

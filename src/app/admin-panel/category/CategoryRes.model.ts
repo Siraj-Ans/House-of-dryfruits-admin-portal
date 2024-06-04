@@ -32,3 +32,7 @@ export interface FetchCategoriesResponse {
 export interface DeleteCategoryResponse {
   message: string;
 }
+
+export interface UpdateCategoryResponse {
+  message: string;
+}

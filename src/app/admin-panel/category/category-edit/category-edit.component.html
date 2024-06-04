@@ -1,128 +1,104 @@
 <div>
   <form
+    class="flex flex-col gap-5"
     [formGroup]="editCategoryForm"
     (ngSubmit)="onEditCategory()"
-    class="text-light-purple"
   >
     <div class="flex flex-col gap-5">
-      <div class="flex flex-col gap-3">
-        <h1 class="text-3xl text-dark-purple mb-5 font-bold">Edit Category</h1>
-        <label class="font-medium text-dark-purple text-xl" for="categoryName"
-          >Edit selected category</label
+      <h1 class="text-3xl text-dark-purple font-bold">Edit Category</h1>
+      <label class="font-medium text-dark-purple text-xl" for="categoryName"
+        >Edit selected category</label
+      >
+      <div class="flex gap-3">
+        <input
+          (change)="onChangeCategoryName($event)"
+          id="categoryName"
+          formControlName="categoryName"
+          [ngClass]="{
+            borderBlink:
+              editCategoryForm.controls['categoryName'].invalid &&
+              editCategoryForm.controls['categoryName'].touched
+          }"
+          placeholder="Category name"
+          class="text-light-purple text-base px-2 py-1 rounded w-56 font-medium border-2 border-gray-300"
+        />
+        <select
+          (change)="onChangeParent($event)"
+          formControlName="parent"
+          class="text-base text-light-purple w-max h-9 px-2 py-1 rounded font-medium border-2 border-gray-300"
         >
-        <div class="flex gap-3">
-          <div>
-            <input
-              id="categoryName"
-              formControlName="categoryName"
-              placeholder="Category name"
-              class="px-2 rounded w-56 text-base font-medium py-1 border-2 border-gray-300"
-            />
-          </div>
-          <div>
-            <select
-              formControlName="parent"
-              class="max-w-fit w-56 text-base text-light-purple rounded font-medium h-9 px-6 py-1 border-2 border-gray-300"
-              required
-            >
-              <option value="null">No parent category</option>
-              @for(category of categories; track category.id; let i = $index) {
-              <option
-                [value]="category.id"
-                [selected]="category.id === selectedCategory?.id"
-              >
-                {{ category.categoryName }}
-              </option>
-              }
-            </select>
-          </div>
-        </div>
+          <option value="null">No parent category</option>
+          @for(category of categories; track category.id; let i = $index) {
+          <option [value]="category.id">
+            {{ category.categoryName }}
+          </option>
+          }
+        </select>
       </div>
+    </div>
 
-      <div class="flex gap-1 flex-col">
-        <label class="font-medium text-base">Properties</label>
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <label class="text-light-purple text-base font-medium"
+          >Properties</label
+        >
         <button
           (click)="onAddProperty()"
           type="button"
-          class="px-3 py-2 text-base font-medium rounded-md text-white border-gray-300 w-fit bg-light-purple hover:bg-dark-purple"
+          class="text-white text-base font-medium rounded-md px-3 py-2 border-gray-300 w-fit bg-light-purple hover:bg-dark-purple"
         >
           Add new property
         </button>
+      </div>
 
-        <div>
-          <div>
-            <div formArrayName="properties">
-              @for(propertyControl of propertyControls.controls; track
-              propertyControls; let i = $index) {
-              <div [formGroupName]="i">
-                <div class="flex gap-2 my-2">
-                  <input
-                    required
-                    class="mb-4"
-                    formControlName="property"
-                    class="px-2 font-medium rounded py-1 border-2 border-gray-300"
-                    type="text"
-                  />
-                  <input
-                    required
-                    formControlName="value"
-                    class="px-3 rounded font-medium py-1 border-2 border-gray-300"
-                    type="text"
-                  />
-                  <!-- [disabled]="
-                        categoryForm.get('properties').invalid &&
-                        categoryForm.get('properties').touched &&
-                        !categoryForm.get('properties').pristine
-                      " -->
-                  <div class="flex items-center">
-                    <mat-icon
-                      (click)="onDeletePropertyControl(i)"
-                      class="cursor-pointer text-red-500"
-                      aria-hidden="false"
-                      aria-label="Example delete icon"
-                      fontIcon="delete"
-                    ></mat-icon>
-                  </div>
-
-                  <!-- <button
-                    (click)="onDeletePropertyControl(i)"
-                    type="button"
-                    class="text-white font-medium rounded-md px-3 py-1 w-fit bg-red-600 bg-gradient-to-r hover:from-red-600 hover:to-red-500"
-                  >
-                    delete
-                  </button> -->
-                </div>
-                <!-- <p
-                    *ngIf="
-                      categoryForm.get('properties').invalid &&
-                      categoryForm.get('properties').touched
-                    "
-                    class="text-red-600 font-medium"
-                  >
-                    Properties must not be empty!
-                  </p> -->
-              </div>
-              }
+      <div formArrayName="properties">
+        @for(propertyControl of propertyControls.controls; track
+        propertyControls; let i = $index) {
+        <div [formGroupName]="i">
+          <div class="flex gap-2 my-2">
+            <input
+              class="mb-4"
+              formControlName="property"
+              class="font-medium px-2 py-1 rounded border-2 border-gray-300"
+              type="text"
+            />
+            <input
+              formControlName="values"
+              class="font-medium px-2 py-1 rounded border-2 border-gray-300"
+              type="text"
+            />
+            <div class="flex items-center">
+              <mat-icon
+                (click)="onDeletePropertyControl(i)"
+                class="cursor-pointer text-red-500"
+                aria-hidden="false"
+                aria-label="Example delete icon"
+                fontIcon="delete"
+              ></mat-icon>
             </div>
           </div>
         </div>
-      </div>
-      <div class="flex gap-3">
-        <button
-          (click)="onCancelEdit()"
-          type="button"
-          class="text-base font-medium mb-4 w-fit text-white px-3 py-2 rounded-md bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
-        >
-          cancel
-        </button>
-        <button
-          (click)="onSaveCategory()"
-          type="submit"
-          class="font-medium mb-4 w-fit text-white px-3 py-2 rounded-md text-base bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
-        >
-          Save
-        </button>
+        }
       </div>
     </div>
+    <div class="flex gap-3 mb-4">
+      <button
+        (click)="onCancelEdit()"
+        type="button"
+        class="text-white text-base font-medium px-3 py-2 rounded-md w-fit bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
+      >
+        cancel
+      </button>
+      <button
+        [disabled]="editCategoryForm.invalid"
+        type="submit"
+        class="text-white text-base font-medium w-fit px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+      >
+        Save
+      </button>
+    </div>
+    @if(editCategoryErrorMessage) {
+    <p class="text-red-600 italic font-bold">{{ editCategoryErrorMessage }}</p>
+    }
   </form>
 </div>

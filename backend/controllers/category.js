@@ -1,4 +1,4 @@
-const Category = require("../../backend/models/category");
+const Category = require("../models/category");
 
 exports.createCategory = (req, res) => {
   async function saveCategoryOnDB() {
@@ -19,7 +19,6 @@ exports.createCategory = (req, res) => {
       }
 
       const result = await category.save();
-      console.log("result: ", result);
 
       if (!result.parent)
         return res.status(200).json({
@@ -37,7 +36,7 @@ exports.createCategory = (req, res) => {
       });
     } catch {
       res.status(500).json({
-        message: "Server failed to create admin!",
+        message: "Server failed to create the category!",
       });
     }
   }
@@ -80,39 +79,53 @@ exports.fetchParentCategory = (req, res) => {
 };
 
 exports.updateCategory = (req, res) => {
-  console.log("haha: ", req.body);
-  Category.updateOne(
-    { _id: req.body.id },
-    {
-      _id: req.body.id,
-      categortName: req.body.categortName,
-      parent: req.body.parent.id,
-      properties: req.body.properties,
-    }
-  )
-    .then((result) => {
-      console.log(result);
-      if (result.modifiedCount) {
-        res.status(200).json({
-          message: "Successfully edited the category!",
+  async function updateCategoryOnDB() {
+    try {
+      throw "";
+      if (!req.body.id)
+        return res.status().json({
+          message: "Catgory ID missing!",
         });
 
-        return;
+      let result;
+
+      if (req.body.parent) {
+        result = await Category.updateOne(
+          { _id: req.body.id },
+          {
+            _id: req.body.id,
+            categoryName: req.body.categoryName,
+            parent: req.body.parent,
+            properties: req.body.properties,
+          }
+        );
       } else {
-        res.status(401).json({
-          message: "Couldn't edit the category!",
+        result = await Category.updateOne(
+          { _id: req.body.id },
+          {
+            _id: req.body.id,
+            categoryName: req.body.categoryName,
+            properties: req.body.properties,
+          }
+        );
+      }
+
+      if (result.modifiedCount < 1)
+        return res.status(500).json({
+          message: "Could not update the category",
         });
 
-        return;
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      if (!res.headersSent)
-        res.status(500).json({
-          message: "Server failed to edit the category!",
-        });
-    });
+      res.status(200).json({
+        message: "Successfully updated the category",
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to update the category!",
+      });
+    }
+  }
+
+  updateCategoryOnDB();
 };
 
 exports.deleteCategory = (req, res) => {
@@ -140,26 +153,4 @@ exports.deleteCategory = (req, res) => {
     }
   }
   removeCategoryFromDB();
-  //   Category.deleteOne({ _id: id })
-  //     .then((result) => {
-  //       if (result.deletedCount > 0) {
-  //         res.status(200).json({
-  //           message: "successfully deleted the category",
-  //         });
-
-  //         return;
-  //       } else {
-  //         res.status(404).json({
-  //           message: "couldn't delete the category",
-  //         });
-
-  //         return;
-  //       }
-  //     })
-  //     .catch(() => {
-  //       if (!res.headersSent)
-  //         res.status(404).json({
-  //           message: "could't delete the category!",
-  //         });
-  //     });
 };

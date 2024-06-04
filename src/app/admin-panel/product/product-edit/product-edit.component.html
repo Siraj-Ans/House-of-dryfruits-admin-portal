@@ -1,0 +1,114 @@
+<form
+  [formGroup]="productForm"
+  (ngSubmit)="onSubmitProduct()"
+  class="flex flex-col text-light-purple gap-6"
+>
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="productName">Product name</label>
+    <input
+      formControlName="productName"
+      id="productName"
+      placeholder="Product Name"
+      class="text-light-purple text-base px-2 py-1 w-min border-2 border-gray-300"
+      type="text"
+    />
+  </div>
+  <div class="flex gap-1 flex-col">
+    <label class="font-medium" for="category">Category</label>
+    <select
+      formControlName="productCategory"
+      class="text-base text-light-purple font-medium w-max h-9 px-2 py-1 rounded border-2 border-gray-300"
+    >
+      <option value="null">Uncategorized</option>
+      @for(category of categories; track category.id; let i = $index) {
+      <option>
+        {{ category.categoryName }}
+      </option>
+      }
+    </select>
+  </div>
+  <div>
+    <label class="font-medium" for="category">Photos</label>
+    <div class="flex w-full">
+      @for(imagePath of imagePaths; track imagePath) {
+      <div class="flex">
+        @for(imageFile of imageFiles; track imageFile) {
+        <img
+          class="w-44 rounded-md object-contain h-32"
+          [src]="imageFile"
+          alt="Cannot get product image"
+        />
+        }
+      </div>
+      }
+
+      <label
+        for="photos"
+        type="button"
+        multiple
+        class="flex flex-col items-center justify-center border-2 border-purple-500 text-purple-500 w-32 cursor-pointer h-24 bg-white"
+      >
+        <!-- <lucide-icon name="arrow-up-from-line"></lucide-icon> -->
+        <p class="font-bold">Add Image</p>
+      </label>
+      <input
+        (change)="onImagePreview($event)"
+        formControlName="productImages"
+        name="productImages"
+        class="hidden"
+        id="photos"
+        type="file"
+        required
+        multiple
+      />
+    </div>
+    <p
+      *ngIf="
+        productForm.get('productImages')?.invalid &&
+        productForm.get('productImages')?.touched
+      "
+      class="text-red-600 font-medium"
+    >
+      Invalid image type.
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="description">Description</label>
+    <textarea
+      formControlName="description"
+      name="description"
+      id="description"
+      class="px-2 1/2 py-2 border-2 border-gray-300"
+      cols="15"
+      rows="5"
+    ></textarea>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="priceInUSD">Price (in USD)</label>
+    <input
+      name="priceInUSD"
+      formControlName="priceInUSD"
+      id="priceInUSD"
+      placeholder="USD"
+      class="text-light-purple text-base px-2 py-1 w-min rounded border-2 border-gray-300"
+      type="text"
+    />
+  </div>
+  <div class="flex gap-4">
+    <button
+      (click)="onCancelEdit()"
+      type="button"
+      class="font-medium w-24 text-white px-3 py-2 rounded-md bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
+    >
+      Cancel
+    </button>
+    <button
+      [disabled]="productForm.invalid"
+      type="submit"
+      class="font-medium w-24 text-white px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+    >
+      Save
+    </button>
+  </div>
+</form>

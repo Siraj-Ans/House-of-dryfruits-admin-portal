@@ -17,7 +17,7 @@ import { Admin } from './admin.model';
 })
 export class AdminComponent implements OnDestroy {
   admins: Admin[] = [];
-  adminsSubscription!: Subscription;
+  adminsSubscription: undefined | Subscription;
   errorMessage: undefined | string;
 
   constructor(private adminService: AdminService) {}
@@ -60,6 +60,6 @@ export class AdminComponent implements OnDestroy {
   onEditAdmin(id: string): void {}
 
   ngOnDestroy(): void {
-    this.adminsSubscription.unsubscribe();
+    this.adminsSubscription?.unsubscribe();
   }
 }

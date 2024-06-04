@@ -16,7 +16,7 @@ router.get(
 );
 
 router.put(
-  "/update-category",
+  "/updateCategory",
   checkAuthMiddleware,
   categoryControllers.updateCategory
 );

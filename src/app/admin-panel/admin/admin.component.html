@@ -6,7 +6,7 @@
   <form
     (ngSubmit)="onCreateAdmin(adminForm)"
     #adminForm="ngForm"
-    class="flex flex-col gap-2 mb-10"
+    class="flex flex-col gap-3 mb-10"
   >
     <p class="font-medium text-dark-purple text-xl">Add new admin</p>
     <div class="flex gap-4">
@@ -63,17 +63,17 @@
     }
   </form>
 
-  <div class="flex flex-col gap-1">
-    <p class="font-medium text-base text-light-purple">Existing admins</p>
+  <div class="flex flex-col gap-3">
+    <p class="font-medium text-dark-purple text-xl">Existing admins</p>
     <div class="w-4/5 shadow-xl bg-white">
       <h1
-        class="font-bold text-base text-dark-purple px-3 py-2 mb-2 border-b-2 border-gray-600"
+        class="font-bold bg-blue-300 text-base text-dark-purple px-3 py-2 border-gray-600"
       >
         ADMIN USERNAMES
       </h1>
       <table class="w-full">
         @for(admin of admins; track admin.id; let i = $index) {
-        <tr class="w-1/3 border-b-2">
+        <tr class="w-1/3 border-b-2 bg-gray-100">
           <td class="pl-2 py-2">
             <p class="text-light-purple text-base font-medium">
               {{ admin.userName }}

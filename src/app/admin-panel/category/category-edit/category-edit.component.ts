@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
 
 import { CategoryService } from '../category.service';
-import { CategoryDataStorageService } from '../category-dataStorage.service';
 
 import { Category } from '../category.model';
 
@@ -22,17 +21,21 @@ import { Category } from '../category.model';
   imports: [CommonModule, ReactiveFormsModule, MatIconModule],
   standalone: true,
   templateUrl: './category-edit.component.html',
+  styleUrl: './category-edit.component.css',
 })
 export class CategoryEditComponent implements OnDestroy {
-  selectedCategory: undefined | Category;
   categories: Category[] = [];
+  canExit = true;
+  editCategoryErrorMessage: undefined | string;
+  selectedCategory: undefined | Category;
+  selectedCategoryIndex: undefined | number;
   editCategoryForm!: FormGroup;
   selectedCategorySubscription: undefined | Subscription;
-  categorySubscription: undefined | Subscription;
+  categoriesSubscription: undefined | Subscription;
+  editCategoryErrorMessageSubscription: undefined | Subscription;
 
   constructor(
     private categoryService: CategoryService,
-    private categoriesDataStorageService: CategoryDataStorageService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -42,45 +45,108 @@ export class CategoryEditComponent implements OnDestroy {
 
     this.editCategoryForm = this.fb.group({
       categoryName: [null, Validators.required],
-      parent: [null, Validators.required],
+      parent: [null],
       properties: this.fb.array([]),
     });
 
-    this.categorySubscription =
+    this.categoryService.updateEditCategoryErrorMessage.subscribe((errMsg) => {
+      this.editCategoryErrorMessage = errMsg;
+    });
+
+    this.categoriesSubscription =
       this.categoryService.updatedCategories.subscribe((categories) => {
         this.categories = categories;
       });
 
-    this.categoryService.selectedCategory.subscribe((category) => {
-      this.selectedCategory = category;
-      console.log('selectedCategory: ', this.selectedCategory);
+    this.selectedCategorySubscription =
+      this.categoryService.selectedCategory.subscribe((selected) => {
+        this.selectedCategoryIndex = selected.index;
+        this.selectedCategory = selected.category;
 
-      this.editCategoryForm
-        .get('categoryName')!
-        .setValue(this.selectedCategory.categoryName);
+        if (this.selectedCategory.parent)
+          this.editCategoryForm
+            .get('parent')!
+            .setValue(this.selectedCategory.parent.id);
 
-      if (this.selectedCategory.properties) {
-        for (let i = 0; i < this.selectedCategory.properties.length; i++) {
-          (<FormArray>this.editCategoryForm.get('properties')).push(
-            new FormGroup({
-              property: new FormControl(
-                this.selectedCategory.properties[i].property
-              ),
-              value: new FormControl(
-                this.selectedCategory.properties[i].values.join(',')
-              ),
-            })
-          );
+        this.editCategoryForm
+          .get('categoryName')!
+          .setValue(this.selectedCategory.categoryName);
+
+        if (this.selectedCategory.properties) {
+          for (let i = 0; i < this.selectedCategory.properties.length; i++) {
+            (<FormArray>this.editCategoryForm.get('properties')).push(
+              new FormGroup({
+                property: new FormControl(
+                  this.selectedCategory.properties[i].property,
+                  Validators.required
+                ),
+                values: new FormControl(
+                  this.selectedCategory.properties[i].values.join(','),
+                  Validators.required
+                ),
+              })
+            );
+          }
         }
-      }
-    });
+      });
+  }
+
+  onChangeCategoryName(event: any): void {
+    if (
+      (<HTMLInputElement>event.target).value !==
+      this.selectedCategory?.categoryName
+    )
+      this.canExit = false;
+  }
+
+  onChangeParent(event: any): void {
+    if (this.selectedCategory?.parent) {
+      if (
+        (<HTMLInputElement>event.target).value !==
+        this.selectedCategory.parent.id
+      )
+        this.canExit = false;
+      else this.canExit = true;
+    } else {
+      this.canExit = false;
+    }
   }
 
   get propertyControls(): FormArray {
     return this.editCategoryForm.get('properties') as FormArray;
   }
 
-  onEditCategory(): void {}
+  onEditCategory(): void {
+    if (this.editCategoryForm.invalid) return;
+
+    const modifiedProperties = this.editCategoryForm
+      .get('properties')!
+      .value.map((property: { property: string; values: string }) => {
+        return {
+          property: property.property,
+          values: property.values.split(','),
+        };
+      });
+
+    let category: Category;
+
+    if (this.editCategoryForm.value.parent) {
+      category = new Category(
+        this.selectedCategory!.id,
+        this.editCategoryForm.value.categoryName,
+        modifiedProperties,
+        this.editCategoryForm.value.parent
+      );
+    } else {
+      category = new Category(
+        this.selectedCategory!.id,
+        this.editCategoryForm.value.categoryName,
+        modifiedProperties
+      );
+    }
+
+    this.categoryService.editCategory(category, this.selectedCategoryIndex!);
+  }
 
   onDeletePropertyControl(index: number): void {
     (this.editCategoryForm.get('properties') as FormArray).removeAt(index);
@@ -90,43 +156,22 @@ export class CategoryEditComponent implements OnDestroy {
     (<FormArray>this.editCategoryForm.get('properties')).push(
       this.fb.group({
         property: [null, Validators.required],
-        value: [null, Validators.required],
+        values: [null, Validators.required],
       })
     );
   }
 
-  onSaveCategory(): void {
-    if (this.editCategoryForm.invalid) return;
-
-    const modifiedProperties = this.editCategoryForm
-      .get('properties')!
-      .value.map((property: { property: string; value: string }) => {
-        return {
-          property: property.property,
-          values: property.value.split(','),
-        };
-      });
-
-    const category = new Category(
-      this.selectedCategory!.id,
-      this.editCategoryForm.value.categoryName,
-      modifiedProperties,
-      this.editCategoryForm.value.parent
-    );
-
-    this.categoriesDataStorageService.updateCategory(category);
-  }
-
   onCancelEdit(): void {
-    this.categoryService.editMode.next('no-edit');
+    this.canExit = true;
+
+    this.categoryService.setEditMode('no-edit');
+    this.categoryService.updatedEditMode.next('no-edit');
     this.router.navigateByUrl('/adminpanel/categories');
   }
 
   ngOnDestroy(): void {
     this.selectedCategorySubscription?.unsubscribe();
-    this.categorySubscription?.unsubscribe();
-
-    console.log('selectSub: ', this.selectedCategorySubscription);
-    console.log('catSub: ', this.categorySubscription);
+    this.categoriesSubscription?.unsubscribe();
+    this.editCategoryErrorMessageSubscription?.unsubscribe();
   }
 }
