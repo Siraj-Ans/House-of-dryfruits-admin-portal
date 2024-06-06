@@ -1,0 +1,14 @@
+.borderBlink {
+  border: 2px solid black;
+  animation: borderBlink 800ms step-end infinite;
+}
+
+@keyframes borderBlink {
+  from,
+  to {
+    border-color: inherit;
+  }
+  30% {
+    border-color: red;
+  }
+}

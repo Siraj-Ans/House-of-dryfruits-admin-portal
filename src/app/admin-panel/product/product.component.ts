@@ -4,12 +4,9 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
 
-// import { ProductDataStorageService } from './product-dataStorage.service';
-// import { ProductService } from './product.service';
+import { ProductService } from './product.service';
 
 import { Product } from './product.model';
-import { ProductDataStorageService } from './product-dataStorage.service';
-import { ProductService } from './product.service';
 
 @Component({
   selector: 'app-product',
@@ -19,10 +16,11 @@ import { ProductService } from './product.service';
 })
 export class ProductComponent {
   products: Product[] = [];
-  productsChangedSubscription: undefined | Subscription;
-  mode = 'no-edit';
+  editAddMode = false;
+  productsSubscription: undefined | Subscription;
+  editAddModeSubscription: undefined | Subscription;
+
   constructor(
-    private productDataStorageService: ProductDataStorageService,
     private productService: ProductService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -32,33 +30,44 @@ export class ProductComponent {
     this.cdr.detectChanges();
   }
   ngOnInit(): void {
-    // this.productDataStorageService.fetchProducts().subscribe((products) => {
-    //   this.products = products;
-    // });
-    this.productService.updateEditMode.subscribe((editMode) => {
-      this.mode = editMode;
-    });
+    this.productService.getProducts();
+
+    this.productsSubscription = this.productService.updateProducts.subscribe(
+      (products) => {
+        this.products = products;
+      }
+    );
+
+    this.editAddModeSubscription =
+      this.productService.updateEditAddMode.subscribe((mode) => {
+        this.editAddMode = mode;
+      });
   }
+
   onAddProduct(): void {
-    this.mode = 'add-mode';
+    this.productService.updateEditAddMode.next(true);
+    this.productService.editAddMode = true;
     this.router.navigate(['create-product/'], {
       relativeTo: this.activatedRoute,
     });
   }
-  onEditProduct(product: Product): void {
-    this.mode = 'edit-mode';
-    // this.productService.selectedProduct.next(product);
+  onEditProduct(product: Product, index: number): void {
+    this.productService.updateEditAddMode.next(true);
+    this.productService.editAddMode = true;
+
+    this.productService.selectedProduct.next({
+      product: product,
+      index: index,
+    });
     this.router.navigate(['edit-product/', product.id], {
       relativeTo: this.activatedRoute,
     });
   }
   onDeleteProduct(productID: string, index: number): void {
-    const selectedProduct = this.products[index];
-    // this.productDataStorageService.deleteProduct(
-    //   productID,
-    //   index,
-    //   selectedProduct
-    // );
+    this.productService.removeProduct(productID, index);
   }
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.productsSubscription?.unsubscribe();
+    this.editAddModeSubscription?.unsubscribe();
+  }
 }

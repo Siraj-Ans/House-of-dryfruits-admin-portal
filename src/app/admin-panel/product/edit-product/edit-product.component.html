@@ -1,0 +1,158 @@
+<form
+  [formGroup]="editProductForm"
+  (ngSubmit)="onSubmitProduct()"
+  class="flex flex-col text-light-purple gap-6 mb-6"
+>
+  <h1 class="text-3xl text-dark-purple font-bold">Edit Product</h1>
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="productName">Product name</label>
+    <input
+      (change)="onChangeProductName($event)"
+      [ngClass]="{
+        borderBlink:
+          editProductForm.controls['productName'].invalid &&
+          editProductForm.controls['productName'].touched
+      }"
+      formControlName="productName"
+      id="productName"
+      placeholder="Product Name"
+      class="text-light-purple text-base px-2 py-1 w-min border-2 border-gray-300"
+      type="text"
+    />
+    @if(editProductForm.controls['productName'].invalid &&
+    editProductForm.controls['productName'].touched) {
+    <p class="text-red-600 italic font-bold">Incorrect product name!</p>
+    }
+  </div>
+  <div class="flex gap-1 flex-col">
+    <label class="font-medium" for="category">Category</label>
+    <select
+      (change)="onChangeProductCategory($event)"
+      [ngClass]="{
+        borderBlink:
+          editProductForm.controls['productCategory'].invalid &&
+          editProductForm.controls['productCategory'].touched
+      }"
+      formControlName="productCategory"
+      class="text-base text-light-purple font-medium w-max h-9 px-2 py-1 rounded border-2 border-gray-300"
+    >
+      <option value="null">Uncategorized</option>
+      @for(category of categories; track category.id; let i = $index) {
+      <option [value]="category.id">
+        {{ category.categoryName }}
+      </option>
+      }
+    </select>
+    @if(editProductForm.controls['productCategory'].invalid &&
+    editProductForm.controls['productCategory'].touched) {
+    <p class="text-red-600 italic font-bold">Plese select a category!</p>
+    }
+  </div>
+  <div class="overflow-scroll overflow-y-hidden overflow-x-auto">
+    <label class="font-medium" for="category">Photos</label>
+    <div class="flex w-full">
+      <!-- @for(imagePath of imagePaths; track i; let i = $index) { -->
+      <img
+        *ngFor="let imagePath of imagePaths"
+        class="w-24 h-24 mr-2 rounded-md object-contain"
+        [src]="imagePath"
+        alt="Cannot get product image"
+      />
+      <!-- } -->
+
+      <label
+        for="photos"
+        type="button"
+        multiple
+        class="flex flex-col gap-2 ml-4 text-purple-500 items-center w-32 cursor-pointer h-24 bg-white justify-center border-2 border-purple-500"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example upload icon"
+          fontIcon="upload"
+        ></mat-icon>
+        <p class="font-bold">Add Image</p>
+      </label>
+      <input
+        (change)="onChangeDescription($event)"
+        (change)="onImagePreview($event)"
+        formControlName="productImages"
+        class="hidden"
+        id="photos"
+        type="file"
+        multiple
+      />
+    </div>
+    <p
+      *ngIf="
+        editProductForm.get('productImages')?.invalid &&
+        editProductForm.get('productImages')?.touched
+      "
+      class="text-red-600 font-medium"
+    >
+      Invalid image type.
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="description">Description</label>
+    <textarea
+      (change)="onChangeDescription($event)"
+      [ngClass]="{
+        borderBlink:
+          editProductForm.controls['description'].invalid &&
+          editProductForm.controls['description'].touched
+      }"
+      formControlName="description"
+      name="description"
+      id="description"
+      class="px-2 1/2 py-2 border-2 border-gray-300"
+      cols="15"
+      rows="5"
+    ></textarea>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="font-medium" for="priceInUSD">Price (in USD)</label>
+    <input
+      (change)="onChangePrice($event)"
+      [ngClass]="{
+        borderBlink:
+          editProductForm.controls['priceInUSD'].invalid &&
+          editProductForm.controls['priceInUSD'].touched
+      }"
+      formControlName="priceInUSD"
+      id="priceInUSD"
+      placeholder="USD"
+      class="text-light-purple text-base px-2 py-1 w-min rounded border-2 border-gray-300"
+      type="text"
+      pattern="^[0-9]+$"
+    />
+    @if(editProductForm.controls['priceInUSD'].invalid &&
+    editProductForm.controls['priceInUSD'].touched) {
+    <p class="text-red-600 italic font-bold">Incorrect price!</p>
+    }
+  </div>
+  <div class="flex items-center gap-4">
+    <button
+      (click)="onCancelEdit()"
+      type="button"
+      class="font-medium w-24 text-white px-3 py-2 rounded-md bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
+    >
+      Cancel
+    </button>
+    <button
+      [disabled]="editProductForm.invalid"
+      type="submit"
+      class="font-medium w-24 text-white px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+    >
+      Save
+    </button>
+    @if(loading) {
+    <app-load-spinner></app-load-spinner>
+
+    }
+  </div>
+  @if(errorMessage) {
+  <p class="text-red-600 italic font-bold">{{ errorMessage }}</p>
+  }
+</form>

@@ -9,7 +9,7 @@ import {
 
 import { CategoryService } from '../category.service';
 
-export const canActivateEditComponent: CanActivateFn = (
+export const canActivateEditComponentGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {

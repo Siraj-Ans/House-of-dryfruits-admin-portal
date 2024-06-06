@@ -1,45 +1,105 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { ProductDataStorageService } from './product-dataStorage.service';
 
 import { Product } from './product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   products: Product[] = [];
-  productsChanged = new Subject<Product[]>();
-  selectedProduct = new ReplaySubject<Product>();
-  updateEditMode = new Subject<string>();
+  editAddMode = false;
+  updateEditProductErrorMessage = new Subject<string>();
+  updateAddProductErrorMessage = new Subject<string>();
+  updateLoading = new Subject<boolean>();
+  updateProducts = new Subject<Product[]>();
+  selectedProduct = new ReplaySubject<{ product: Product; index: number }>(1);
+  updateEditAddMode = new Subject<boolean>();
 
-  getProducts(): Product[] {
-    return this.products.slice();
+  constructor(
+    private productDataStorageService: ProductDataStorageService,
+    private router: Router
+  ) {}
+
+  getEditAddMode(): boolean {
+    return this.editAddMode;
   }
 
-  getProductById(id: string): Product {
-    const product = this.products.filter((product) => product.id === id);
-    return product[0];
+  setEditAddMode(mode: boolean): void {
+    this.editAddMode = mode;
   }
 
-  addProduct(product: Product): void {
-    this.products.push(product);
-    this.productsChanged.next(this.products.slice());
+  getProducts(): void {
+    this.productDataStorageService.fetchProducts().subscribe({
+      next: (responseData) => {
+        this.products = responseData.products;
+
+        this.updateProducts.next(this.products.slice());
+      },
+      error: (err) => {
+        console.log('[product] err: ', err);
+      },
+      complete: () => {},
+    });
   }
 
-  setProducts(products: Product[]): void {
-    this.products = products;
-    this.productsChanged.next(this.products.slice());
+  addProduct(product: FormData): void {
+    this.updateLoading.next(true);
+
+    this.productDataStorageService.createProduct(product).subscribe({
+      next: (responseData) => {
+        const product = new Product(
+          responseData.product.id,
+          responseData.product.productName,
+          responseData.product.productCategory,
+          responseData.product.productImages,
+          responseData.product.description,
+          responseData.product.priceInUSD
+        );
+
+        this.products.push(product);
+        this.updateProducts.next(this.products.slice());
+        this.updateEditAddMode.next(false);
+        this.updateLoading.next(false);
+        this.router.navigate(['adminpanel/products']);
+      },
+      error: (err) => {
+        this.updateLoading.next(false);
+        this.updateAddProductErrorMessage.next(err.error.message);
+      },
+      complete: () => {},
+    });
   }
 
-  deleteProduct(index: number): void {
-    this.products.splice(index, 1);
-    this.productsChanged.next(this.products.slice());
+  removeProduct(productID: string, index: number): void {
+    this.productDataStorageService.deleteProduct(productID).subscribe({
+      next: (responseData) => {
+        this.products.splice(index, 1);
+        this.updateProducts.next(this.products.slice());
+      },
+      error: (err) => {
+        console.log('[products] Error: ', err);
+      },
+      complete: () => {},
+    });
   }
 
-  updateProducts(updatedProduct: Product): void {
-    const index = this.products.findIndex(
-      (product) => product.id === updatedProduct.id
-    );
-
-    this.products[index] = updatedProduct;
-    this.productsChanged.next(this.products.slice());
+  editProduct(updatedProduct: FormData): void {
+    this.updateLoading.next(true);
+    this.productDataStorageService.updatedProduct(updatedProduct).subscribe({
+      next: () => {
+        this.getProducts();
+        this.updateProducts.next(this.products.slice());
+        this.updateEditAddMode.next(false);
+        this.updateLoading.next(false);
+        this.router.navigate(['adminpanel/products']);
+      },
+      error: (err) => {
+        this.updateLoading.next(false);
+        this.updateEditProductErrorMessage.next(err.error.message);
+      },
+      complete: () => {},
+    });
   }
 }

@@ -2,10 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
+const path = require("path");
 
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const CategoryRoutes = require("./routes/category");
+const productRoutes = require("./routes/product");
 
 async function connectToMongoDB() {
   try {
@@ -29,9 +31,11 @@ const app = express();
 app.use("", express.json());
 app.use("", cors());
 
+app.use("/productImages", express.static(path.join("productImages")));
 app.use("/api/login", authRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api/categories", CategoryRoutes);
+app.use("/api/products", productRoutes);
 
 const httpServer = http.createServer(app);
 

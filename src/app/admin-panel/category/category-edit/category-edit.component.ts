@@ -145,7 +145,7 @@ export class CategoryEditComponent implements OnDestroy {
       );
     }
 
-    this.categoryService.editCategory(category, this.selectedCategoryIndex!);
+    this.categoryService.editCategory(category);
   }
 
   onDeletePropertyControl(index: number): void {

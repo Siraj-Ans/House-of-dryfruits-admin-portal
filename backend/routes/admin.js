@@ -1,15 +1,15 @@
 const express = require("express");
-const adminsControllers = require("../controllers/admin");
+const adminControllers = require("../controllers/admin");
 const checkAuthMiddleware = require("../middlewares/check-auth.js");
 
 const router = express.Router();
 
-router.post("/createAdmin", checkAuthMiddleware, adminsControllers.createAdmin);
-router.get("/fetchAdmins", checkAuthMiddleware, adminsControllers.fetchAdmins);
+router.post("/createAdmin", checkAuthMiddleware, adminControllers.createAdmin);
+router.get("/fetchAdmins", checkAuthMiddleware, adminControllers.fetchAdmins);
 router.delete(
   "/deleteAdmin",
   checkAuthMiddleware,
-  adminsControllers.deleteAdmin
+  adminControllers.deleteAdmin
 );
 
 module.exports = router;

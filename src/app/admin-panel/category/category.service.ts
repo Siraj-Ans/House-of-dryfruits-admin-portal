@@ -76,7 +76,7 @@ export class CategoryService implements OnInit, OnDestroy {
     });
   }
 
-  editCategory(category: Category, index: number): void {
+  editCategory(category: Category): void {
     this.categoryDataStorageService.updateCategory(category).subscribe({
       next: (responseData) => {
         this.getCategories();

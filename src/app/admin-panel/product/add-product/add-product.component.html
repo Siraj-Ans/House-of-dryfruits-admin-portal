@@ -1,64 +1,84 @@
 <form
   [formGroup]="productForm"
-  (ngSubmit)="onSubmitProduct()"
-  class="flex flex-col text-light-purple gap-6"
+  (ngSubmit)="onEditProduct()"
+  class="flex flex-col text-light-purple gap-6 mb-6"
 >
+  <h1 class="text-3xl text-dark-purple font-bold">Add Product</h1>
   <div class="flex flex-col gap-1">
     <label class="font-medium" for="productName">Product name</label>
     <input
+      (change)="onChangeProductName($event)"
+      [ngClass]="{
+        borderBlink:
+          productForm.controls['productName'].invalid &&
+          productForm.controls['productName'].touched
+      }"
       formControlName="productName"
       id="productName"
       placeholder="Product Name"
       class="text-light-purple text-base px-2 py-1 w-min border-2 border-gray-300"
       type="text"
     />
+    @if(productForm.controls['productName'].invalid &&
+    productForm.controls['productName'].touched) {
+    <p class="text-red-600 italic font-bold">Incorrect product name!</p>
+    }
   </div>
   <div class="flex gap-1 flex-col">
     <label class="font-medium" for="category">Category</label>
     <select
+      (change)="onChangeProductCategory($event)"
+      [ngClass]="{
+        borderBlink:
+          productForm.controls['productCategory'].invalid &&
+          productForm.controls['productCategory'].touched
+      }"
       formControlName="productCategory"
       class="text-base text-light-purple font-medium w-max h-9 px-2 py-1 rounded border-2 border-gray-300"
     >
       <option value="null">Uncategorized</option>
       @for(category of categories; track category.id; let i = $index) {
-      <option>
+      <option [value]="category.id">
         {{ category.categoryName }}
       </option>
       }
     </select>
+    @if(productForm.controls['productCategory'].invalid &&
+    productForm.controls['productCategory'].touched) {
+    <p class="text-red-600 italic font-bold">Plese select a category!</p>
+    }
   </div>
-  <div>
+  <div class="overflow-scroll overflow-y-hidden overflow-x-auto">
     <label class="font-medium" for="category">Photos</label>
     <div class="flex w-full">
-      @for(imagePath of imagePaths; track imagePath) {
-      <div class="flex">
-        @for(imageFile of imageFiles; track imageFile) {
-        <img
-          class="w-44 rounded-md object-contain h-32"
-          [src]="imageFile"
-          alt="Cannot get product image"
-        />
-        }
-      </div>
-      }
+      <!-- @for(imagePath of imagePaths; track i; let i = $index) { -->
+      <img
+        *ngFor="let imagePath of imagePaths"
+        class="w-24 h-24 rounded-md object-contain"
+        [src]="imagePath"
+        alt="Cannot get product image"
+      />
+      <!-- } -->
 
       <label
         for="photos"
         type="button"
         multiple
-        class="flex flex-col items-center justify-center border-2 border-purple-500 text-purple-500 w-32 cursor-pointer h-24 bg-white"
+        class="flex flex-col gap-2 text-purple-500 items-center w-32 cursor-pointer h-24 bg-white justify-center border-2 border-purple-500"
       >
-        <!-- <lucide-icon name="arrow-up-from-line"></lucide-icon> -->
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example upload icon"
+          fontIcon="upload"
+        ></mat-icon>
         <p class="font-bold">Add Image</p>
       </label>
       <input
         (change)="onImagePreview($event)"
         formControlName="productImages"
-        name="productImages"
         class="hidden"
         id="photos"
         type="file"
-        required
         multiple
       />
     </div>
@@ -76,6 +96,12 @@
   <div class="flex flex-col gap-1">
     <label class="font-medium" for="description">Description</label>
     <textarea
+      (change)="onChangeDescription($event)"
+      [ngClass]="{
+        borderBlink:
+          productForm.controls['description'].invalid &&
+          productForm.controls['description'].touched
+      }"
       formControlName="description"
       name="description"
       id="description"
@@ -87,17 +113,27 @@
   <div class="flex flex-col gap-1">
     <label class="font-medium" for="priceInUSD">Price (in USD)</label>
     <input
-      name="priceInUSD"
+      (change)="onChangePrice($event)"
+      [ngClass]="{
+        borderBlink:
+          productForm.controls['priceInUSD'].invalid &&
+          productForm.controls['priceInUSD'].touched
+      }"
       formControlName="priceInUSD"
       id="priceInUSD"
       placeholder="USD"
       class="text-light-purple text-base px-2 py-1 w-min rounded border-2 border-gray-300"
       type="text"
+      pattern="^[0-9]+$"
     />
+    @if(productForm.controls['priceInUSD'].invalid &&
+    productForm.controls['priceInUSD'].touched) {
+    <p class="text-red-600 italic font-bold">Incorrect price!</p>
+    }
   </div>
-  <div class="flex gap-4">
+  <div class="flex items-center gap-4">
     <button
-      (click)="onCancelEdit()"
+      (click)="onCancelAdd()"
       type="button"
       class="font-medium w-24 text-white px-3 py-2 rounded-md bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
     >
@@ -110,5 +146,12 @@
     >
       Save
     </button>
+    @if(loading) {
+    <app-load-spinner class=""></app-load-spinner>
+
+    }
   </div>
+  @if(errorMessage) {
+  <p class="text-red-600 italic font-bold">{{ errorMessage }}</p>
+  }
 </form>

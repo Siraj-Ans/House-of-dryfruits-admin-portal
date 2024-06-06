@@ -81,7 +81,6 @@ exports.fetchParentCategory = (req, res) => {
 exports.updateCategory = (req, res) => {
   async function updateCategoryOnDB() {
     try {
-      throw "";
       if (!req.body.id)
         return res.status().json({
           message: "Catgory ID missing!",
