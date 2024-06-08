@@ -2,20 +2,20 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { ReplaySubject, Subject } from 'rxjs';
 
 import { AuthDataStorageService } from './auth-data-storage.service';
 
 import { User } from './user.model';
-import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   updateError = new Subject<string>();
   updateLoadingStatus = new Subject<boolean>();
+  updateUser = new ReplaySubject<User>(1);
   private token: undefined | null | string;
   private isAuthenticated = false;
   private timerExpiration: any;
-  private user: undefined | null | User;
 
   constructor(
     private authDataStorageService: AuthDataStorageService,
@@ -45,9 +45,8 @@ export class AuthService {
 
           const user = new User(decodedToken.userName);
 
-          this.user = user;
-
-          this.router.navigate(['/adminpanel']);
+          this.updateUser.next(user);
+          this.router.navigate(['/adminpanel/dashboard']);
         }
       },
       error: (err) => {
@@ -57,7 +56,6 @@ export class AuthService {
         console.log('AuthService err: ', err);
       },
       complete: () => {
-        console.log('c');
         this.updateLoadingStatus.next(false);
       },
     });
@@ -74,6 +72,12 @@ export class AuthService {
       if (isInFuture) {
         this.token = authInfo.token;
         this.isAuthenticated = true;
+
+        const decodedToken: { exp: number; iat: number; userName: string } =
+          jwtDecode(this.token);
+
+        const user = new User(decodedToken.userName);
+        this.updateUser.next(user);
 
         this.setTokenTimer(isInFuture);
       }

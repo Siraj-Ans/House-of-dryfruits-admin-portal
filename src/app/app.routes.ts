@@ -18,13 +18,7 @@ import { canActivateEditComponentGuard } from './admin-panel/category/category-e
 import { canActivateAddEditComponentGuard } from './admin-panel/product/canActivateAddEditComponent.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'adminpanel/dashboard', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },
-  {
-    path: 'adminpanel',
-    redirectTo: '/adminpanel/dashboard',
-    pathMatch: 'full',
-  },
   {
     path: 'adminpanel',
     component: AdminPanelComponent,
@@ -66,4 +60,5 @@ export const routes: Routes = [
       { path: 'settings', component: SettingComponent },
     ],
   },
+  { path: '', redirectTo: 'adminpanel/dashboard', pathMatch: 'full' },
 ];

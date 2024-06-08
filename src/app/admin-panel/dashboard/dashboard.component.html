@@ -1,5 +1,66 @@
 <div
-  class="flex container flex-col bg-light w-full pt-3 px-3 mt-2 rounded-md overflow-scroll overflow-y-auto overflow-x-hidden"
+  class="flex flex-col gap-5 bg-light rounded-md h-full w-full px-3 py-3 overflow-scroll overflow-x-hidden overflow-y-auto"
 >
-  <h1>This is a dashboard component!</h1>
+  <div class="flex justify-between">
+    <h1 class="text-2xl text-light-purple">
+      Hello,
+      <span class="font-bold">{{ user!.userName }}</span>
+    </h1>
+    <div class="flex items-center h-fit">
+      <!-- <img class="w-6 h-6" [src]="user.picture" alt="User image not found" />
+        <p class="text-dark-purple px-2 rounded-br-sm rounded-tr-sm bg-gray-300">
+            {{ user.name }}
+        </p> -->
+    </div>
+  </div>
+
+  <h1 class="text-3xl text-dark-purple font-bold">Orders</h1>
+  <section class="text-lg flex flex-wrap gap-6 mb-10">
+    <div
+      class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-44 py-3 h-fit box-shadow"
+    >
+      <p class="text-light-purple font-medium">TODAY</p>
+      <p class="text-3xl font-bold text-blue-700">2</p>
+      <p class="font-medium text-light-purple">2 orders today</p>
+    </div>
+    <div
+      class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-44 py-3 h-fit box-shadow"
+    >
+      <p class="text-light-purple font-medium">THIS WEEK</p>
+      <p class="text-3xl font-bold text-blue-700">2</p>
+      <p class="font-medium text-light-purple">2 orders this week</p>
+    </div>
+    <div
+      class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-44 py-3 h-fit box-shadow"
+    >
+      <p class="text-light-purple font-medium">THIS MONTH</p>
+      <p class="text-3xl font-bold text-blue-700">2</p>
+      <p class="font-medium text-light-purple">2 orders this month</p>
+    </div>
+  </section>
+
+  <h1 class="text-3xl text-dark-purple font-bold">Revenue</h1>
+  <section class="text-lg flex flex-wrap gap-6 mb-6">
+    <div
+      class="flex flex-col grow text-center bg-white gap-2 rounded-sm w-44 py-3 box-shadow"
+    >
+      <p class="text-light-purple font-medium">TODAY</p>
+      <p class="text-3xl font-bold text-blue-700">$ 2</p>
+      <p class="font-medium text-light-purple">2 orders today</p>
+    </div>
+    <div
+      class="flex flex-col grow text-center bg-white gap-2 rounded-sm w-44 py-3 box-shadow"
+    >
+      <p class="text-light-purple text-md font-medium">THIS WEEK</p>
+      <p class="text-3xl font-bold text-blue-700">$ 2</p>
+      <p class="font-medium text-light-purple">2 this week</p>
+    </div>
+    <div
+      class="flex flex-col text-center grow bg-white gap-2 rounded-sm py-3 w-44 box-shadow"
+    >
+      <p class="text-dark-purple text-md font-medium">THIS MONTH</p>
+      <p class="text-3xl font-bold text-blue-700">$ 2</p>
+      <p class="font-medium text-light-purple">2 this month</p>
+    </div>
+  </section>
 </div>
