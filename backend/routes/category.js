@@ -9,11 +9,9 @@ router.post(
   categoryControllers.createCategory
 );
 
-router.get(
-  "/fetchCategories",
-  checkAuthMiddleware,
-  categoryControllers.fetchCategories
-);
+router.get("/fetchCategories", categoryControllers.fetchCategories);
+
+router.get("/fetchCategory", categoryControllers.fetchCategory);
 
 router.put(
   "/updateCategory",
@@ -27,10 +25,6 @@ router.delete(
   categoryControllers.deleteCategory
 );
 
-router.get(
-  "/fetch-parent-categories",
-  checkAuthMiddleware,
-  categoryControllers.fetchParentCategory
-);
+router.get("/fetch-parent-categories", categoryControllers.fetchParentCategory);
 
 module.exports = router;

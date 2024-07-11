@@ -63,6 +63,28 @@ exports.fetchCategories = (req, res) => {
   getCategoriesFromDB();
 };
 
+exports.fetchCategory = (req, res) => {
+  async function fetchCategoryFromDB() {
+    const categoryId = req.query.categoryId;
+    try {
+      const category = await Category.findOne({ _id: categoryId }).populate(
+        "parent"
+      );
+
+      res.status(200).json({
+        message: "Successfully fetched the category!",
+        category: category,
+      });
+    } catch {
+      res.status(500).json({
+        message: "server failed to fetch the category!",
+      });
+    }
+  }
+
+  fetchCategoryFromDB();
+};
+
 exports.fetchParentCategory = (req, res) => {
   ParentCategory.find()
     .then((documents) => {

@@ -11,11 +11,16 @@ router.post(
   productControllers.createProduct
 );
 
+router.get("/fetchProducts", productControllers.fetchProducts);
+
+router.get("/fetchNewProducts", productControllers.fetchNewProducts);
+
 router.get(
-  "/fetchProducts",
-  checkAuthMiddleware,
-  productControllers.fetchProducts
+  "/fetchCategoriesProducts",
+  productControllers.fetchCategoriesProducts
 );
+
+router.get("/fetchCategoryProducts", productControllers.fetchCategoryProducts);
 
 router.put(
   "/updateProduct",

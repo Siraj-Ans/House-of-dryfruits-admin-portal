@@ -2,19 +2,95 @@ const Product = require("../../backend/models/product");
 const fs = require("fs");
 
 exports.fetchProducts = (req, res) => {
-  Product.find()
-    .populate("productCategory")
-    .then((documents) => {
+  async function getProductsFromDB() {
+    try {
+      const products = await Product.find().populate("productCategory");
+
       res.status(200).json({
         message: "Successfully fetched the products!",
-        products: documents,
+        products: products,
       });
-    })
-    .catch((err) => {
+    } catch {
       res.status(500).json({
-        message: "Server failed to load products!",
+        message: "Server failed to fetch the products!",
       });
-    });
+    }
+  }
+  getProductsFromDB();
+};
+
+exports.fetchCategoriesProducts = (req, res) => {
+  async function getCategoriesProductsFromDB() {
+    try {
+      const categoriesIds = JSON.parse(req.query.categoryIds);
+
+      const categoriesProducts = await Product.find(
+        {
+          productCategory: categoriesIds,
+        },
+        null,
+        { limit: 5, sort: { _id: -1 } }
+      ).populate("productCategory");
+
+      res.status(200).json({
+        message: "Successfully fetched the categories products!",
+        categoriesProducts: categoriesProducts,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "Server failed to fetch the categories products!",
+      });
+    }
+  }
+  getCategoriesProductsFromDB();
+};
+
+exports.fetchCategoryProducts = (req, res) => {
+  async function getCategoryProductsFromDB() {
+    try {
+      const categoryId = req.query.categoryId;
+
+      const categoryProducts = await Product.find(
+        {
+          productCategory: categoryId,
+        },
+        null,
+        { sort: { _id: -1 } }
+      ).populate("productCategory");
+
+      res.status(200).json({
+        message: "Successfully fetched the category products!",
+        categoryProducts: categoryProducts,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "Server failed to fetch the category products!",
+      });
+    }
+  }
+  getCategoryProductsFromDB();
+};
+
+exports.fetchNewProducts = (req, res) => {
+  async function getNewProductsFromDB() {
+    try {
+      const products = await Product.find({}, null, {
+        sort: { _id: -1 },
+        limit: 10,
+      });
+
+      res.status(200).json({
+        message: "Server failed to fetch the new products!",
+        products: products,
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to fetch the new products!",
+      });
+    }
+  }
+
+  getNewProductsFromDB();
 };
 
 exports.createProduct = (req, res) => {
