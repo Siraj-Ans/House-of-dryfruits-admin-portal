@@ -23,12 +23,15 @@
     "@angular/platform-server": "^18.0.0",
     "@angular/router": "^18.0.0",
     "@angular/ssr": "^18.0.1",
+    "angularcli": "^6.0.1",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "g": "^2.0.1",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.4.0",
     "multer": "^1.4.5-lts.1",
+    "ngx-toastr": "^19.0.0",
     "nodemon": "^3.1.0",
     "path": "^0.12.7",
     "rxjs": "~7.8.0",
@@ -37,7 +40,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.1",
-    "@angular/cli": "^18.0.1",
+    "@angular/cli": "^18.0.6",
     "@angular/compiler-cli": "^18.0.0",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
@@ -49,8 +52,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
     "typescript": "~5.4.2"
   }
 }

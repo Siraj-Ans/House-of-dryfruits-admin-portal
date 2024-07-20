@@ -6,8 +6,13 @@ const path = require("path");
 
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
+const userRoutes = require("./routes/user");
 const CategoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
+const accountRoutes = require("./routes/account");
+const wishListRoutes = require("./routes/wishlist");
+const settingRoutes = require("./routes/setting");
+const orderRoutes = require("./routes/order");
 
 async function connectToMongoDB() {
   try {
@@ -32,10 +37,15 @@ app.use("", express.json());
 app.use("", cors());
 
 app.use("/productImages", express.static(path.join("productImages")));
-app.use("/api/login", authRoutes);
 app.use("/api/admins", adminRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/categories", CategoryRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/account/", accountRoutes);
+app.use("/api/wishlist/", wishListRoutes);
+app.use("/api/auth/", authRoutes);
+app.use("/api/settings/", settingRoutes);
+app.use("/api/orders/", orderRoutes);
 
 const httpServer = http.createServer(app);
 

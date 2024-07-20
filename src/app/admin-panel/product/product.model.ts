@@ -9,6 +9,6 @@ export class Product {
     },
     public productImages: string[],
     public description: string,
-    public priceInUSD: number
+    public priceInPKR: number
   ) {}
 }

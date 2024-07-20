@@ -7,6 +7,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideToastr } from 'ngx-toastr';
 
 import { routes } from './app.routes';
 
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideAnimationsAsync(),
+    provideToastr(),
     provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
   ],
 };

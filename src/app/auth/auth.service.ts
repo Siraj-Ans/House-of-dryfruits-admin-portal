@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ReplaySubject, Subject } from 'rxjs';
 
 import { AuthDataStorageService } from './auth-data-storage.service';
+import { ToastService } from '../toastr.service';
 
 import { User } from './user.model';
 
@@ -20,6 +21,7 @@ export class AuthService {
   constructor(
     private authDataStorageService: AuthDataStorageService,
     private router: Router,
+    private toastr: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -51,9 +53,23 @@ export class AuthService {
       },
       error: (err) => {
         this.updateLoadingStatus.next(false);
-        this.updateError.next(err.error.message);
 
-        console.log('AuthService err: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
       },
       complete: () => {
         this.updateLoadingStatus.next(false);
@@ -128,11 +144,12 @@ export class AuthService {
   }
 
   logOut(): void {
+    console.log('trig');
     this.removeAuthData();
     this.isAuthenticated = false;
     clearTimeout(this.timerExpiration);
 
-    this.router.navigate(['/auth']);
+    this.router.navigate(['auth']);
   }
 
   getAuthToken(): undefined | null | string {

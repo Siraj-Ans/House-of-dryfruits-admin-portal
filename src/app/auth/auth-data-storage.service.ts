@@ -12,7 +12,7 @@ export class AuthDataStorageService {
 
   logIn(userName: string, password: string): Observable<LoginResponseData> {
     return this.http.post<LoginResponseData>(
-      'http://localhost:3000/api/login',
+      'http://localhost:3000/api/auth/login',
       { userName: userName, password: password }
     );
   }

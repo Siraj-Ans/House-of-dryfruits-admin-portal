@@ -19,6 +19,28 @@ exports.fetchProducts = (req, res) => {
   getProductsFromDB();
 };
 
+exports.fetchProduct = (req, res) => {
+  async function getProductFromDB() {
+    try {
+      const productId = req.query.productId;
+
+      const product = await Product.findOne({ _id: productId }).populate(
+        "productCategory"
+      );
+
+      res.status(200).json({
+        message: "Successfully fetched the product!",
+        product: product,
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to fetch the product!",
+      });
+    }
+  }
+  getProductFromDB();
+};
+
 exports.fetchCategoriesProducts = (req, res) => {
   async function getCategoriesProductsFromDB() {
     try {
@@ -71,6 +93,27 @@ exports.fetchCategoryProducts = (req, res) => {
   getCategoryProductsFromDB();
 };
 
+exports.fetchCartProducts = (req, res) => {
+  async function getCartProductsFromDB() {
+    try {
+      const productIds = JSON.parse(req.query.productIds);
+      const cartProducts = await Product.find({
+        _id: productIds,
+      }).populate("productCategory");
+
+      res.status(200).json({
+        message: "Successfully fetched the cart products!",
+        products: cartProducts,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "Server failed to fetch the cart products!",
+      });
+    }
+  }
+  getCartProductsFromDB();
+};
+
 exports.fetchNewProducts = (req, res) => {
   async function getNewProductsFromDB() {
     try {
@@ -111,11 +154,9 @@ exports.createProduct = (req, res) => {
         productCategory: req.body.productCategory,
         productImages: productImages,
         description: req.body.description,
-        priceInUSD: +req.body.priceInUSD,
+        priceInPKR: +req.body.priceInPKR,
       });
-
       const result = await product.save();
-
       const newProduct = await Product.findOne({ _id: result._id }).populate(
         "productCategory"
       );
@@ -124,7 +165,7 @@ exports.createProduct = (req, res) => {
         message: "successfully created the product!",
         product: newProduct,
       });
-    } catch {
+    } catch (err) {
       res.status(500).json({
         message: "server failed to add the product!",
       });
@@ -161,7 +202,7 @@ exports.updateProduct = (req, res) => {
           productCategory: req.body.productCategory,
           productImages: productImages,
           description: req.body.description,
-          priceInUSD: req.body.priceInUSD,
+          priceInPKR: +req.body.priceInPKR,
         }
       );
 
@@ -202,7 +243,6 @@ exports.deleteProduct = (req, res) => {
           if (err) {
             console.error("There was an error deleting the file:", err);
           } else {
-            console.log("File deleted successfully");
           }
         });
       }

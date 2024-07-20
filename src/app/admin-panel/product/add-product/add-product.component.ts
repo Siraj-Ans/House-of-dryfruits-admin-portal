@@ -53,12 +53,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       productCategory: [null, Validators.required],
       productImages: [null, Validators.required],
       description: [null, Validators.required],
-      priceInUSD: [null, Validators.required],
+      priceInPKR: [null, Validators.required],
     });
 
     this.errorMessageSubscription =
       this.productSerive.updateAddProductErrorMessage.subscribe((errMsg) => {
-        console.log('err: ', errMsg);
         this.errorMessage = errMsg;
       });
 
@@ -130,7 +129,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     formData.append('productName', this.productForm.value.productName);
     formData.append('productCategory', this.productForm.value.productCategory);
     formData.append('description', this.productForm.value.description);
-    formData.append('priceInUSD', this.productForm.value.priceInUSD);
+    formData.append('priceInPKR', this.productForm.value.priceInPKR);
     this.imageFiles?.forEach((file) => {
       formData.append('productImages', file);
     });

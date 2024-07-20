@@ -55,7 +55,7 @@ export class ProductService {
           responseData.product.productCategory,
           responseData.product.productImages,
           responseData.product.description,
-          responseData.product.priceInUSD
+          responseData.product.priceInPKR
         );
 
         this.products.push(product);

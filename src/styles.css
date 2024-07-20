@@ -1,5 +1,35 @@
-@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.warning-toast {
+  background-color: #ffc107; /* Yellow background */
+  color: #333; /* Darker text for contrast */
+  font-weight: bold; /* Emphasize the text */
+  padding: 15px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.error-toast {
+  background-color: #f44336; /* Red background for error */
+  color: black; /* White text for high contrast */
+  font-weight: bold; /* Emphasize the text */
+  padding: 15px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Slightly darker shadow for emphasis */
+}
+
+.success-toast {
+  background-color: #4caf50; /* Green background for success */
+  color: #fff; /* White text for high contrast */
+  font-weight: bold; /* Emphasize the text */
+  padding: 15px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Slightly darker shadow for emphasis */
+}
+
+.animate-slide-down {
+  @apply transform translate-y-0 opacity-100 visible;
+  transition: transform 2s ease-in-out, opacity 0.5s ease-in-out;
+}

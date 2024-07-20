@@ -13,7 +13,7 @@ import { User } from '../../auth/user.model';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  user!: User;
+  user: undefined | User;
   userSubscription: undefined | Subscription;
 
   constructor(private authService: AuthService) {}

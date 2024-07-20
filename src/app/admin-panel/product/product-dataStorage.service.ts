@@ -26,7 +26,7 @@ export class ProductDataStorageService {
       };
       productImages: string[];
       description: string;
-      priceInUSD: number;
+      priceInPKR: number;
     }[];
   }> {
     return this.http
@@ -48,7 +48,7 @@ export class ProductDataStorageService {
                 },
                 productImages: product.productImages,
                 description: product.description,
-                priceInUSD: product.priceInUSD,
+                priceInPKR: product.priceInPKR,
               };
             }),
           };
@@ -68,7 +68,7 @@ export class ProductDataStorageService {
       };
       productImages: string[];
       description: string;
-      priceInUSD: number;
+      priceInPKR: number;
     };
   }> {
     return this.http
@@ -84,7 +84,7 @@ export class ProductDataStorageService {
               id: res.product._id,
               productName: res.product.productName,
               description: res.product.description,
-              priceInUSD: res.product.priceInUSD,
+              priceInPKR: res.product.priceInPKR,
               productImages: res.product.productImages,
               productCategory: {
                 id: res.product.productCategory._id,

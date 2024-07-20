@@ -58,7 +58,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
       productCategory: [null, Validators.required],
       productImages: [null, Validators.required],
       description: [null, Validators.required],
-      priceInUSD: [null, Validators.required],
+      priceInPKR: [null, Validators.required],
     });
 
     this.errorMessageSubscription =
@@ -95,8 +95,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
           ?.get('description')
           ?.setValue(this.selectedProduct?.description);
         this.editProductForm
-          ?.get('priceInUSD')
-          ?.setValue(this.selectedProduct?.priceInUSD);
+          ?.get('priceInPKR')
+          ?.setValue(this.selectedProduct?.priceInPKR);
       });
   }
 
@@ -130,7 +130,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
   onChangePrice(event: Event): void {
     if (
       +(<HTMLInputElement>event.target).value !==
-      this.selectedProduct?.priceInUSD
+      this.selectedProduct?.priceInPKR
     )
       this.canExit = false;
     else this.canExit = true;
@@ -180,7 +180,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
       this.editProductForm.value.productCategory
     );
     formData.append('description', this.editProductForm.value.description);
-    formData.append('priceInUSD', this.editProductForm.value.priceInUSD);
+    formData.append('priceInPKR', this.editProductForm.value.priceInPKR);
     this.existingImagePaths?.forEach((imagePaths) => {
       formData.append('existingImages', imagePaths);
     });

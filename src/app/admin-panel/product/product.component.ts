@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
@@ -23,12 +23,9 @@ export class ProductComponent {
   constructor(
     private productService: ProductService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute
   ) {}
-  ngAfterContentChecked(): void {
-    this.cdr.detectChanges();
-  }
+
   ngOnInit(): void {
     this.productService.getProducts();
 

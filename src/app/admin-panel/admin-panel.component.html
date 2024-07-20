@@ -89,6 +89,7 @@
       </a>
 
       <div
+        (click)="onLogout()"
         class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
       >
         <mat-icon
@@ -96,7 +97,7 @@
           aria-label="Example logout icon"
           fontIcon="logout"
         ></mat-icon>
-        <button class="w-full text-left" (click)="onLogout()">Logout</button>
+        <button class="w-full text-left">Logout</button>
       </div>
     </nav>
   </div>

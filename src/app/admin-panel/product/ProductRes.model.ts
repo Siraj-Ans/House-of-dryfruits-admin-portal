@@ -12,7 +12,7 @@ export interface CreateProductReponse {
     };
     productImages: string[];
     description: string;
-    priceInUSD: number;
+    priceInPKR: number;
   };
 }
 
@@ -30,7 +30,7 @@ export interface FetchProductResponse {
     };
     productImages: string[];
     description: string;
-    priceInUSD: number;
+    priceInPKR: number;
   }[];
 }
 

@@ -13,12 +13,16 @@ router.post(
 
 router.get("/fetchProducts", productControllers.fetchProducts);
 
+router.get("/fetchProduct", productControllers.fetchProduct);
+
 router.get("/fetchNewProducts", productControllers.fetchNewProducts);
 
 router.get(
   "/fetchCategoriesProducts",
   productControllers.fetchCategoriesProducts
 );
+
+router.get("/fetchCartProducts", productControllers.fetchCartProducts);
 
 router.get("/fetchCategoryProducts", productControllers.fetchCategoryProducts);
 
