@@ -24,6 +24,7 @@
     "@angular/router": "^18.0.0",
     "@angular/ssr": "^18.0.1",
     "angularcli": "^6.0.1",
+    "crypto": "^1.0.1",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "g": "^2.0.1",
@@ -35,6 +36,7 @@
     "nodemon": "^3.1.0",
     "path": "^0.12.7",
     "rxjs": "~7.8.0",
+    "trackingmore-sdk-nodejs": "^1.0.8",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

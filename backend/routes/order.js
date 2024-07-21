@@ -7,4 +7,6 @@ router.post("/createOrder", checkAuthMiddleware, orderControllers.createOrder);
 
 router.get("/fetchOrders", orderControllers.fetchOrders);
 
+router.post("/cancelOrder", checkAuthMiddleware, orderControllers.cancelOrder);
+
 module.exports = router;
