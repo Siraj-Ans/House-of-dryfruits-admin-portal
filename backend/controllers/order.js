@@ -1,16 +1,8 @@
 const Order = require("../models/order");
-const crypto = require("crypto");
-
-const TrackingMore = require("trackingmore-sdk-nodejs");
-
-const key = "gsjg9woj-eazq-m740-ntcu-ucl9t1yqrtyo";
-const trackingmore = new TrackingMore(key);
 
 exports.createOrder = (req, res) => {
   async function saveOrderOnDB() {
     try {
-      const uuID = crypto.randomBytes(16).toString("hex");
-
       const order = new Order({
         user: req.body.user,
         emailAddress: req.body.emailAddress,
@@ -23,45 +15,18 @@ exports.createOrder = (req, res) => {
         address1: req.body.address1,
         paymentMethod: req.body.paymentMethod,
         productInfo: req.body.productInfo,
-        trackingId: uuID,
+        paid: req.body.paid,
+        fullfilled: req.body.fullfilled,
         address2: req.body.address2,
       });
 
       const result = await order.save();
 
-      const now = new Date();
-
-      // Format year, month, day, hours, minutes, seconds as two digits
-      const year = now.getFullYear();
-      const month = (now.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-      const day = now.getDate().toString().padStart(2, "0");
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      const seconds = now.getSeconds().toString().padStart(2, "0");
-
-      const params = {
-        tracking_number: uuID,
-        courier_code: "tcs-express",
-        customer_name: result.firstName + " " + result.lastName,
-        order_date: `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`,
-        customer_email: result.emailAddress,
-        customer_sms: result.phoneNumber,
-        recipient_postcode: result.postalCode,
-        title: "Title None",
-        language: "en",
-      };
-
-      const trackingResult = await trackingmore.trackings.createTracking(
-        params
-      );
-
-      console.log(trackingResult);
-
       res.status(200).json({
         message: "Successfully saved the order",
         order: result,
       });
-    } catch (err) {
+    } catch {
       console.log(err);
       res.status(500).json({
         message: "server failed to create order!",
@@ -77,29 +42,11 @@ exports.cancelOrder = (req, res) => {
     try {
       const userId = req.body.userId;
       const orderId = req.body.orderId;
-      const trackingId = req.body.trackingId;
-
-      const params = {
-        tracking_numbers: trackingId,
-        courier_code: "tcs-express",
-      };
-
-      const trackingInfo = await trackingmore.trackings.getTrackingResults(
-        params
-      );
-
-      console.log(trackingInfo.data);
 
       const result = await Order.deleteOne({
         user: userId,
         _id: orderId,
       });
-
-      const trackingResult = await trackingmore.trackings.deleteTrackingByID(
-        trackingInfo.data[0].id
-      );
-
-      console.log(trackingResult, result);
 
       res.status(200).json({
         message: "Successfully removed the the order",
@@ -119,11 +66,7 @@ exports.cancelOrder = (req, res) => {
 exports.fetchOrders = (req, res) => {
   async function fetchOrdersFromDB() {
     try {
-      const userId = req.query.userId;
-
-      const orders = await Order.find({
-        user: userId,
-      });
+      const orders = await Order.find();
 
       res.status(200).json({
         message: "Successfully fetched the orders!",
@@ -137,4 +80,63 @@ exports.fetchOrders = (req, res) => {
   }
 
   fetchOrdersFromDB();
+};
+
+exports.fetchOrder = (req, res) => {
+  async function fetchOrderFromDB() {
+    try {
+      const userId = req.query.userId;
+      const orderId = req.query.orderId;
+
+      const order = await Order.findOne({
+        user: userId,
+        _id: orderId,
+      });
+
+      res.status(200).json({
+        message: "Successfully fetched the order!",
+        order: order,
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to fetch order!",
+      });
+    }
+  }
+
+  fetchOrderFromDB();
+};
+
+exports.updateOrder = (req, res) => {
+  async function setOrderPaidOnDB() {
+    try {
+      const orderId = req.body.orderId;
+      const trackingId = req.body.trackingId;
+      const paidStatus = req.body.paidStatus;
+      const shipmentStatus = req.body.shipmentStatus;
+
+      console.log(
+        await Order.updateOne(
+          {
+            _id: orderId,
+          },
+          {
+            paid: paidStatus === "unpaid" ? false : true,
+            trackingId: trackingId,
+            fullfilled: shipmentStatus,
+          }
+        )
+      );
+
+      res.status(200).json({
+        message: "server successfully updated the order!",
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to update the order!",
+      });
+    }
+  }
+
+  setOrderPaidOnDB();
 };

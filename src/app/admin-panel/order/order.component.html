@@ -1,71 +1,195 @@
 <div
   class="flex flex-col gap-5 bg-light rounded-md h-full w-full px-3 py-3 overflow-scroll overflow-x-hidden overflow-y-auto"
 >
-  <h1 class="text-3xl text-dark-purple font-bold">Orders</h1>
+  <h1 class="text-2xl text-dark-purple font-bold lg:text-3xl">Orders</h1>
 
-  <div class="flex flex-col text-center shadow-lg w-4/5">
+  @if(updateMode) {
+  <h1 class="text-2xl text-dark-purple font-bold lg:text-3xl">
+    Update product status
+  </h1>
+
+  <form
+    class="flex flex-col gap-5"
+    [formGroup]="orderForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="flex items-center gap-2">
+      <label
+        class="text-light-purple text-sm font-medium lg:text-base"
+        for="paidStatus"
+        >Paid Status:</label
+      >
+      <select
+        class="text-light-purple text-sm w-max h-9 px-2 py-1 rounded font-medium border-2 border-gray-300 lg:text-base"
+        id="paidStatus"
+        formControlName="paidStatus"
+        [ngClass]="{
+          borderBlink:
+            orderForm.controls['paidStatus'].invalid &&
+            orderForm.controls['paidStatus'].touched
+        }"
+      >
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="null"
+        >
+          Select...
+        </option>
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="paid"
+        >
+          Paid
+        </option>
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="unpaid"
+        >
+          Unpaid
+        </option>
+      </select>
+    </div>
+    <div class="flex items-center gap-2">
+      <label
+        class="text-light-purple text-sm font-medium lg:text-base"
+        for="shipmentStatus"
+        >Shipment Status:</label
+      >
+      <select
+        class="text-light-purple text-sm w-max h-9 px-2 py-1 rounded font-medium border-2 border-gray-300 lg:text-base"
+        id="shipmentStatus"
+        formControlName="shipmentStatus"
+        [ngClass]="{
+          borderBlink:
+            orderForm.controls['shipmentStatus'].invalid &&
+            orderForm.controls['shipmentStatus'].touched
+        }"
+      >
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="null"
+        >
+          Select...
+        </option>
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="pending"
+        >
+          Pending
+        </option>
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="shipped"
+        >
+          Shipped
+        </option>
+        <option
+          class="text-dark-purple font-bold text-sm: lg:text-base"
+          value="delivered"
+        >
+          Delivered
+        </option>
+      </select>
+    </div>
+    <div class="flex items-center gap-2">
+      <label
+        class="text-light-purple text-sm font-medium lg:text-base"
+        for="trackingId"
+        >Tracking ID:</label
+      >
+      <input
+        class="text-light-purple text-sm px-2 py-1 rounded w-56 font-medium border-2 border-gray-300 lg:text-base"
+        id="trackingId"
+        formControlName="trackingId"
+        type="text"
+        [ngClass]="{
+          borderBlink:
+            orderForm.controls['trackingId'].invalid &&
+            orderForm.controls['trackingId'].touched
+        }"
+      />
+    </div>
+
+    <div class="flex gap-4">
+      <button
+        [disabled]="orderForm.invalid"
+        [ngClass]="orderForm.invalid ? 'invalid-save' : 'valid-save'"
+        type="submit"
+        class="text-white text-sm font-medium w-fit px-2 py-1 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900 lg:text-base lg:px-2 lg:py-1"
+      >
+        Save
+      </button>
+      @if(updatingOrderStatus) {
+      <app-load-spinner></app-load-spinner>
+      }
+    </div>
+  </form>
+
+  } @if(loading) {
+  <app-pulse-load-spinner></app-pulse-load-spinner>
+  }@else {
+  <div class="flex flex-col text-center shadow-lg w-full lg:w-11/12">
     <div class="flex bg-blue-300">
       <div class="px-2 py-2 w-1/5">
-        <p class="text-base text-dark-purple font-bold">Date</p>
+        <p class="text-sm text-dark-purple font-bold lg:text-base">Date</p>
+      </div>
+      <div class="px-2 py-2 w-1/4">
+        <p class="text-sm text-dark-purple pl-5 font-bold lg:text-base">
+          Reciepient
+        </p>
       </div>
       <div class="px-2 py-2 w-2/5">
-        <p class="text-base text-dark-purple pl-5 font-bold">Reciepient</p>
-      </div>
-      <div class="px-2 py-2 w-2/5">
-        <p class="text-base text-dark-purple pl-5 font-bold">Products</p>
+        <p class="text-sm text-dark-purple pl-5 font-bold lg:text-base">
+          Products
+        </p>
       </div>
     </div>
 
     @for(order of orders; track order.id; let i = $index) {
     <div
-      class="flex px-3 border-b border-gray-400 text-center py-2 items-center justify-between"
+      class="flex px-2 py-1 border-b border-gray-400 text-center items-center justify-between lg:px-3 lg:py-2"
     >
-      <div class="w-1/5">
-        <p class="text-base text-light-purple font-medium">
+      <div class="w-2/12">
+        <p class="text-sm text-light-purple font-medium lg:text-sm">
           {{ order.createdAt.replace("T", " ").substring(0, 19) }}
         </p>
       </div>
       <div class="w-2/5">
-        <p class="text-base text-light-purple font-medium">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
           {{
             order.firstName + " " + order.lastName + " " + order.emailAddress
           }}
         </p>
-        <p class="text-base text-light-purple font-medium">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
           {{ order.address1 }}
         </p>
-        <p class="text-base text-light-purple font-medium">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
           {{ order.phoneNumber }}
         </p>
-        <p class="text-base text-light-purple font-medium">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
           {{ order.country + " " + order.city + " " + order.postalCode }}
         </p>
       </div>
       <div class="w-2/5">
         @for(productInfo of order.productInfo; track i; let i = $index) {
-        <p class="text-base text-light-purple font-medium">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
           {{ "(" + productInfo.productName + ") x" + productInfo.quantity }}
         </p>
 
         }
       </div>
-      <!-- <div class="flex gap-3">
-        <mat-icon
-          (click)="onEditCategory(category, i)"
-          class="cursor-pointer"
-          aria-hidden="false"
-          aria-label="Example edit_note icon"
-          fontIcon="edit_note"
-        ></mat-icon>
-        <mat-icon
-          (click)="onDeleteCategory(i, category.id!)"
-          class="cursor-pointer text-red-500"
-          aria-hidden="false"
-          aria-label="Example delete icon"
-          fontIcon="delete"
-        ></mat-icon> -->
-      <!-- </div> -->
+      <div class="flex flex-col gap-3 w-auto">
+        <p class="text-sm text-light-purple font-medium lg:text-base">
+          <button
+            (click)="onUpdateProductStatus(i)"
+            class="font-medium text-white px-2 py-1 w-full rounded-md mb-3 bg-gradient-to-r bg-green-500 text-base hover:from-green-500 hover:to-green-900 lg:px-3 lg:py-2"
+          >
+            Update
+          </button>
+        </p>
+      </div>
     </div>
     }
   </div>
+  }
 </div>

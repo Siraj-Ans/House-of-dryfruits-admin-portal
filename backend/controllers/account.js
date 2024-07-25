@@ -72,7 +72,7 @@ exports.updateAccountDetails = (req, res) => {
       }
 
       if (!updated)
-        return res.status(404).json({
+        return res.status(409).json({
           message:
             "The account details you entered already exist. Please try again.",
         });

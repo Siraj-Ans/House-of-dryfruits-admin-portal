@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 
 import {
   FetchProductsResponse,
@@ -7,8 +8,11 @@ import {
   SaveFeaturedProduct,
   SaveShippingFee,
 } from './SettingRes.model';
-import { map, Observable } from 'rxjs';
 import { Setting } from './Setting.model';
+
+import { environment } from '../../../environments/environment.development';
+
+const BACKEND_URL = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root',
@@ -25,16 +29,14 @@ export class SettingDataStorageServiceService {
         id: string;
         categoryName: string;
         properties: { property: string; values: string[] }[];
-      };
+      } | null;
       productImages: string[];
       description: string;
       priceInPKR: number;
     }[];
   }> {
     return this.http
-      .get<FetchProductsResponse>(
-        'http://localhost:3000/api/products/fetchProducts'
-      )
+      .get<FetchProductsResponse>(BACKEND_URL + '/products/fetchProducts')
       .pipe(
         map((res) => {
           return {
@@ -43,11 +45,13 @@ export class SettingDataStorageServiceService {
               return {
                 id: product._id,
                 productName: product.productName,
-                productCategory: {
-                  id: product.productCategory._id,
-                  categoryName: product.productCategory.categoryName,
-                  properties: product.productCategory.properties,
-                },
+                productCategory: product.productCategory
+                  ? {
+                      id: product.productCategory._id,
+                      categoryName: product.productCategory.categoryName,
+                      properties: product.productCategory.properties,
+                    }
+                  : null,
                 productImages: product.productImages,
                 description: product.description,
                 priceInPKR: product.priceInPKR,
@@ -67,7 +71,7 @@ export class SettingDataStorageServiceService {
     }[];
   }> {
     return this.http
-      .get<FetchSettings>('http://localhost:3000/api/settings/fetchSettings')
+      .get<FetchSettings>(BACKEND_URL + '/settings/fetchSettings')
       .pipe(
         map((res) => {
           return {
@@ -92,7 +96,7 @@ export class SettingDataStorageServiceService {
   }> {
     return this.http
       .post<SaveFeaturedProduct>(
-        'http://localhost:3000/api/settings/saveFeaturedProduct',
+        BACKEND_URL + '/settings/saveFeaturedProduct',
         settings
       )
       .pipe(
@@ -109,7 +113,7 @@ export class SettingDataStorageServiceService {
   }> {
     return this.http
       .post<SaveShippingFee>(
-        'http://localhost:3000/api/settings/saveShippingFee',
+        BACKEND_URL + '/settings/saveShippingFee',
         settings
       )
       .pipe(

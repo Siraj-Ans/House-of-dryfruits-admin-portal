@@ -1,7 +1,7 @@
 <div
-  class="flex flex-col gap-5 bg-light rounded-md h-full w-full px-3 py-3 overflow-scroll overflow-x-hidden overflow-y-auto"
+  class="flex flex-col gap-5 bg-light rounded-md h-full w-full px-3 py-3 overflow-scroll overflow-x-hidden overflow-y-auto lg:h-full lg:w-full lg:px-3 lg:py-3"
 >
-  <h1 class="text-3xl text-dark-purple font-bold">Settings</h1>
+  <h1 class="text-2xl text-dark-purple font-bold lg:text-3xl">Settings</h1>
 
   <form
     (ngSubmit)="onSubmitSetting()"
@@ -21,19 +21,29 @@
             settingForm.controls['featuredProduct'].touched
         }"
         formControlName="featuredProduct"
-        class="text-light-purple text-base w-56 h-9 px-2 py-1 rounded font-medium border-2 border-gray-300"
+        class="text-light-purple text-sm w-44 h-9 px-2 py-1 rounded font-medium border-2 border-gray-300 lg:text-base lg:w-56"
       >
-        <option value="null">No product selected</option>
+        <option
+          class="text-sm text-light-purple font-bold lg:text-base"
+          value="null"
+        >
+          No product selected
+        </option>
         @for(product of products; track product.id; let i = $index) {
 
-        <option [value]="product.id">
+        <option
+          class="text-sm text-light-purple font-bold lg:text-base"
+          [value]="product.id"
+        >
           {{ product.productName }}
         </option>
         }
       </select>
     </div>
     <div class="flex flex-col gap-1">
-      <label class="text-base font-medium text-light-purple" for="shippingFee"
+      <label
+        class="text-sm font-medium text-light-purple lg:text-base"
+        for="shippingFee"
         >Shipping fee</label
       >
       <input
@@ -45,21 +55,22 @@
             settingForm.controls['shippingFee'].touched
         }"
         placeholder="Shipping Fee"
-        class="text-light-purple text-base px-2 py-1 rounded w-56 font-medium border-2 border-gray-300"
+        class="text-light-purple text-sm px-2 py-1 rounded w-44 font-medium border-2 border-gray-300 lg:text-base lg:w-56"
         type="number"
       />
     </div>
     <div class="flex gap-4 items-center">
       <button
         [disabled]="settingForm.invalid"
+        [ngClass]="settingForm.invalid ? 'invalid-save' : 'valid-save'"
         type="submit"
-        class="font-medium w-fit text-white px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+        class="font-medium w-fit text-white px-2 py-1 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900 lg:px-3 lg:py-2"
       >
         Save Settings
       </button>
 
       @if(loading) {
-      <app-load-spinner class=""></app-load-spinner>
+      <app-load-spinner></app-load-spinner>
 
       }
     </div>

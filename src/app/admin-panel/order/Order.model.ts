@@ -16,6 +16,9 @@ export class Order {
       quantity: number;
       productsTotal: number;
     }[],
+    public paid: boolean,
+    public fullfilled: boolean,
+    public trackingId: string | undefined,
     public createdAt: string,
     public updatedAt: string,
     public address2?: string

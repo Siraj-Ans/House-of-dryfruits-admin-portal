@@ -11,6 +11,8 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
 
+import { PulseLoadSpinnerComponent } from '../../shared/pulse-load-spinner/pulse-load-spinner.component';
+
 import { CategoryService } from './category.service';
 
 import { Category } from './category.model';
@@ -18,21 +20,25 @@ import { Category } from './category.model';
 @Component({
   selector: 'app-category',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MatIconModule, RouterModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    MatIconModule,
+    RouterModule,
+    PulseLoadSpinnerComponent,
+  ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.css',
 })
 export class CategoryComponent implements OnDestroy {
   mode = 'no-edit';
-  addCategoryErrorMessage: undefined | string;
-  deleteCategoryErrorMessage: undefined | string;
   selectedCategoryId: undefined | string;
   categories: Category[] = [];
+  loading = false;
   categoryForm!: FormGroup;
-  categoriesSubscription: undefined | Subscription;
-  addCategoryErrorMessageSubscription: undefined | Subscription;
-  deleteCategoryErrorMessageSubscription: undefined | Subscription;
-  editModeSubscription: undefined | Subscription;
+  categoriesSubscription: Subscription | undefined;
+  editModeSubscription: Subscription | undefined;
+  updateLoadingStatusSubscription: Subscription | undefined;
 
   constructor(
     private fb: FormBuilder,
@@ -50,18 +56,6 @@ export class CategoryComponent implements OnDestroy {
       properties: this.fb.array([]),
     });
 
-    this.addCategoryErrorMessageSubscription =
-      this.categoryService.updateAddCategoryErrorMessage.subscribe((errMsg) => {
-        this.addCategoryErrorMessage = errMsg;
-      });
-
-    this.deleteCategoryErrorMessageSubscription =
-      this.categoryService.updateDeleteCategoryErrorMessage.subscribe(
-        (errMsg) => {
-          this.deleteCategoryErrorMessage = errMsg;
-        }
-      );
-
     this.categoriesSubscription =
       this.categoryService.updatedCategories.subscribe((categories) => {
         this.categories = categories;
@@ -72,6 +66,11 @@ export class CategoryComponent implements OnDestroy {
         this.mode = editMode;
       }
     );
+
+    this.updateLoadingStatusSubscription =
+      this.categoryService.updateLoadingStatus.subscribe((status) => {
+        this.loading = status;
+      });
   }
 
   get propertyControls() {
@@ -151,8 +150,7 @@ export class CategoryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.categoriesSubscription?.unsubscribe();
-    this.addCategoryErrorMessageSubscription?.unsubscribe();
-    this.deleteCategoryErrorMessageSubscription?.unsubscribe();
     this.editModeSubscription?.unsubscribe();
+    this.updateLoadingStatusSubscription?.unsubscribe();
   }
 }

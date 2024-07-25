@@ -1,0 +1,12 @@
+.valid-save {
+  background-color: rgb(21 128 61);
+}
+
+.invalid-save {
+  background-color: rgb(187 247 208);
+  cursor: no-drop;
+}
+
+.valid-save:hover {
+  background-color: rgb(34 197 94);
+}

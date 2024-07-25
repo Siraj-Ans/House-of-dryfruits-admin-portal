@@ -1,8 +1,9 @@
 <div class="flex gap-2 h-full">
-  <div class="flex flex-col w-1/4">
-    <h1 class="font-medium text-cream pt-3 pl-1 text-2xl cursor-pointer">
+  <div class="hidden flex-col w-1/4 lg:flex">
+    <h1 class="flex font-medium text-cream pt-3 pl-1 text-2xl cursor-pointer">
       HOUSE OF DRYFRUITS
     </h1>
+
     <nav class="flex flex-col text-cream pl-3 pt-6 gap-6">
       <a
         routerLink="dashboard"
@@ -75,6 +76,127 @@
       </a>
 
       <a
+        routerLink="settings"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example settings icon"
+          fontIcon="settings"
+        ></mat-icon>
+        <p>Settings</p>
+      </a>
+
+      <div
+        (click)="onLogout()"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example logout icon"
+          fontIcon="logout"
+        ></mat-icon>
+        <button class="w-full text-left">Logout</button>
+      </div>
+    </nav>
+  </div>
+
+  <button
+    class="absolute flex items-center justify-between pt-2 z-10 w-16 h-16 burger lg:hidden"
+    (click)="toggleIcon()"
+  >
+    <i class="w-full h-full material-icons">
+      {{ isMenuOpen ? "close" : "menu" }}</i
+    >
+  </button>
+
+  <div
+    class="flex flex-col items-start overlay-content"
+    [@expandContent]="state"
+  >
+    <h1 class="flex font-medium mb-10 text-dark-purple text-2xl cursor-pointer">
+      HOUSE OF DRYFRUITS
+    </h1>
+    <nav class="flex flex-col text-dark-purple pl-3 gap-6">
+      <a
+        (click)="onSelect()"
+        routerLink="dashboard"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md px-2 py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example home icon"
+          fontIcon="home"
+        ></mat-icon>
+        <p>Dashboard</p>
+      </a>
+
+      <a
+        (click)="onSelect()"
+        routerLink="products"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example shopping_cart icon"
+          fontIcon="shopping_cart"
+        ></mat-icon>
+        <p>Products</p>
+      </a>
+
+      <a
+        (click)="onSelect()"
+        routerLink="categories"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example toc icon"
+          fontIcon="toc"
+        ></mat-icon>
+        <p>Categories</p>
+      </a>
+
+      <a
+        (click)="onSelect()"
+        routerLink="orders"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example layers icon"
+          fontIcon="layers"
+        ></mat-icon>
+        <p>Orders</p>
+      </a>
+
+      <a
+        (click)="onSelect()"
+        routerLink="admins"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex rounded-md py-2 pl-2 gap-2 text-base cursor-pointer hover:bg-gray-300 hover:text-light-purple"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example admin_panel_settings icon"
+          fontIcon="admin_panel_settings"
+        ></mat-icon>
+        <p>Admins</p>
+      </a>
+
+      <a
+        (click)="onSelect()"
         routerLink="settings"
         routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }"

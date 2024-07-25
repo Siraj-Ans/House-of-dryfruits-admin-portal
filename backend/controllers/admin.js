@@ -30,6 +30,55 @@ exports.createAdmin = (req, res) => {
   saveAdminToDB();
 };
 
+exports.updateAdmin = (req, res) => {
+  async function updateAdminOnDB() {
+    try {
+      const adminId = req.body.adminId;
+      const userName = req.body.userName;
+      const password = req.body.password;
+      const dateAndTime = req.body.dateAndTime;
+
+      let updated = false;
+
+      const admin = await Admin.findOne({
+        _id: adminId,
+      });
+
+      if (userName !== admin.userName) {
+        updated = true;
+      } else if (password !== admin.password) {
+        updated = true;
+      }
+
+      if (!updated)
+        return res.status(409).json({
+          message: "The admin details you entered already exists!",
+        });
+
+      await Admin.updateOne(
+        {
+          _id: adminId,
+        },
+        {
+          userName: userName,
+          password: password,
+          dateAndTime: dateAndTime,
+        }
+      );
+
+      res.status(200).json({
+        message: "Successfully update the admin!",
+      });
+    } catch {
+      res.status(500).json({
+        message: "server failed to update admin!",
+      });
+    }
+  }
+
+  updateAdminOnDB();
+};
+
 exports.fetchAdmins = (req, res) => {
   async function getAdminsFromDB() {
     try {

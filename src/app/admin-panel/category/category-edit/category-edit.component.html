@@ -5,8 +5,12 @@
     (ngSubmit)="onEditCategory()"
   >
     <div class="flex flex-col gap-5">
-      <h1 class="text-3xl text-dark-purple font-bold">Edit Category</h1>
-      <label class="font-medium text-dark-purple text-xl" for="categoryName"
+      <h1 class="text-2xl text-dark-purple font-bold lg:text-3xl">
+        Edit Category
+      </h1>
+      <label
+        class="font-medium text-dark-purple text-lg lg:text-xl"
+        for="categoryName"
         >Edit selected category</label
       >
       <div class="flex gap-3">
@@ -20,16 +24,24 @@
               editCategoryForm.controls['categoryName'].touched
           }"
           placeholder="Category name"
-          class="text-light-purple text-base px-2 py-1 rounded w-56 font-medium border-2 border-gray-300"
+          class="text-light-purple text-sm px-2 py-1 rounded w-44 font-medium border-2 border-gray-300 lg:w-56 lg:text-base"
         />
         <select
           (change)="onChangeParent($event)"
           formControlName="parent"
-          class="text-base text-light-purple w-max h-9 px-2 py-1 rounded font-medium border-2 border-gray-300"
+          class="text-sm text-light-purple w-max h-9 px-2 py-1 rounded font-medium border-2 border-gray-300 lg:text-base"
         >
-          <option value="null">No parent category</option>
+          <option
+            class="text-dark-purple font-bold text-sm lg:text-base"
+            value="null"
+          >
+            No parent category
+          </option>
           @for(category of categories; track category.id; let i = $index) {
-          <option [value]="category.id">
+          <option
+            class="text-dark-purple font-bold text-sm lg:text-base"
+            [value]="category.id"
+          >
             {{ category.categoryName }}
           </option>
           }
@@ -39,13 +51,13 @@
 
     <div class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
-        <label class="text-light-purple text-base font-medium"
+        <label class="text-light-purple text-sm font-medium lg:text-base"
           >Properties</label
         >
         <button
           (click)="onAddProperty()"
           type="button"
-          class="text-white text-base font-medium rounded-md px-3 py-2 border-gray-300 w-fit bg-light-purple hover:bg-dark-purple"
+          class="text-white text-sm font-medium rounded-md px-2 py-1 border-gray-300 w-fit bg-light-purple hover:bg-dark-purple lg:text-base lg:px-3 lg:py-2"
         >
           Add new property
         </button>
@@ -59,12 +71,12 @@
             <input
               class="mb-4"
               formControlName="property"
-              class="font-medium px-2 py-1 rounded border-2 border-gray-300"
+              class="font-medium px-1 py-1 rounded border-2 border-gray-300 lg:px-2 lg:py-1"
               type="text"
             />
             <input
               formControlName="values"
-              class="font-medium px-2 py-1 rounded border-2 border-gray-300"
+              class="font-medium px-1 py-1 rounded border-2 border-gray-300 lg:px-2 lg:py-1"
               type="text"
             />
             <div class="flex items-center">
@@ -85,20 +97,17 @@
       <button
         (click)="onCancelEdit()"
         type="button"
-        class="text-white text-base font-medium px-3 py-2 rounded-md w-fit bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900"
+        class="text-white text-sm font-medium px-2 py-1 rounded-md w-fit bg-red-500 bg-gradient-to-r hover:from-red-500 hover:to-red-900 lg:text-base lg:px-3 lg:py-2"
       >
         cancel
       </button>
       <button
         [disabled]="editCategoryForm.invalid"
         type="submit"
-        class="text-white text-base font-medium w-fit px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
+        class="text-white text-sm font-medium w-fit px-2 py-1 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900 lg:text-base lg:px-2 lg:py-1"
       >
         Save
       </button>
     </div>
-    @if(editCategoryErrorMessage) {
-    <p class="text-red-600 italic font-bold">{{ editCategoryErrorMessage }}</p>
-    }
   </form>
 </div>

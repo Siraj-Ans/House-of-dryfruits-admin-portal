@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
 const path = require("path");
+require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
@@ -13,11 +14,14 @@ const accountRoutes = require("./routes/account");
 const wishListRoutes = require("./routes/wishlist");
 const settingRoutes = require("./routes/setting");
 const orderRoutes = require("./routes/order");
+const reviewRoutes = require("./routes/review");
 
 async function connectToMongoDB() {
   try {
     await mongoose.connect(
-      "mongodb+srv://siraj--ansari:qhDSRPakhkGE0boR@cluster0.qxmz1zo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+      "mongodb+srv://siraj--ansari:" +
+        process.env.MONGODB_USER +
+        "@cluster0.qxmz1zo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       {
         dbName: "House-of-dryfruits",
       }
@@ -46,6 +50,7 @@ app.use("/api/wishlist/", wishListRoutes);
 app.use("/api/auth/", authRoutes);
 app.use("/api/settings/", settingRoutes);
 app.use("/api/orders/", orderRoutes);
+app.use("/api/reviews/", reviewRoutes);
 
 const httpServer = http.createServer(app);
 

@@ -10,6 +10,10 @@ import {
   UpdateCategoryResponse,
 } from './CategoryRes.model';
 
+import { environment } from '../../../environments/environment.development';
+
+const BACKEND_URL = environment.apiUrl + '/categories/';
+
 @Injectable({ providedIn: 'root' })
 export class CategoryDataStorageService {
   constructor(private http: HttpClient) {}
@@ -28,10 +32,7 @@ export class CategoryDataStorageService {
     };
   }> {
     return this.http
-      .post<CreateCategoryResponse>(
-        'http://localhost:3000/api/categories/createCategory',
-        category
-      )
+      .post<CreateCategoryResponse>(BACKEND_URL + 'createCategory', category)
       .pipe(
         map((res) => {
           if (res.category.parent) {
@@ -76,9 +77,7 @@ export class CategoryDataStorageService {
     }[];
   }> {
     return this.http
-      .get<FetchCategoriesResponse>(
-        'http://localhost:3000/api/categories/fetchCategories'
-      )
+      .get<FetchCategoriesResponse>(BACKEND_URL + 'fetchCategories')
       .pipe(
         map((responseData) => {
           return {
@@ -119,7 +118,7 @@ export class CategoryDataStorageService {
 
   deleteCategory(categoryID: string): Observable<{ message: string }> {
     return this.http.delete<DeleteCategoryResponse>(
-      'http://localhost:3000/api/categories/deleteCategory',
+      BACKEND_URL + 'deleteCategory',
       {
         params: new HttpParams().set('categoryID', categoryID),
       }
@@ -128,7 +127,7 @@ export class CategoryDataStorageService {
 
   updateCategory(category: Category): Observable<UpdateCategoryResponse> {
     return this.http.put<UpdateCategoryResponse>(
-      'http://localhost:3000/api/categories/updateCategory/',
+      BACKEND_URL + 'updateCategory/',
       category
     );
   }

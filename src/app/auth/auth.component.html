@@ -1,13 +1,15 @@
 <div class="flex items-center justify-center bg-gray-100 h-full">
   <h1
-    class="font-medium absolute top-0 w-full text-cream bg-dark-purple py-2 pl-3 text-2xl cursor-pointer"
+    class="font-medium text-cream bg-dark-purple cursor-pointer py-2 pl-3 text-xl absolute top-0 w-full md:text-2xl lg:text-3xl"
   >
     HOUSE OF DRYFRUITS
   </h1>
   <div
-    class="flex flex-col rounded-sm items-center gap-16 w-1/3 h-3/4 py-6 shadow-xl bg-white"
+    class="flex flex-col rounded items-center gap-8 w-3/4 h-3/4 py-4 shadow-xl bg-white md:gap-16 md:py-6 md:w-1/3 md:h-3/4"
   >
-    <h1 class="text-3xl font-semibold text-dark-purple">Admin Login</h1>
+    <h1 class="text-2xl font-semibold text-dark-purple md:text-3xl lg:text-4xl">
+      Admin Login
+    </h1>
 
     <form (submit)="onLogin(form)" #form="ngForm" class="flex flex-col gap-5">
       <div class="flex flex-col items-start">
@@ -31,14 +33,15 @@
           [ngClass]="{
             borderBlink: password.touched && password.invalid
           }"
-          required=""
+          required
           name="password"
           class="px-2 py-1 border-2 rounded"
-          type="text"
+          type="password"
         />
       </div>
       <div class="flex items-center gap-2 justify-between">
         <button
+          [ngClass]="form.invalid ? 'invalid-save' : 'valid-save'"
           type="submit"
           [disabled]="form.invalid"
           class="px-3 py-1 w-full font-medium text-light rounded-md bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 transition-all duration-500"
@@ -46,14 +49,10 @@
           Submit
         </button>
         @if(loading) {
-        <app-load-spinner class=""></app-load-spinner>
+        <app-load-spinner></app-load-spinner>
 
         }
       </div>
-
-      @if(errorMessage) {
-      <p class="text-red-600 font-bold italic">{{ errorMessage }}</p>
-      }
     </form>
   </div>
 </div>

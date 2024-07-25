@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 
 import { LoginResponseData } from './auth-reqs.model';
 
+import { environment } from '../../environments/environment.development';
+
+const BACKEND_URL = environment.apiUrl + '/auth/';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,9 +15,9 @@ export class AuthDataStorageService {
   constructor(private http: HttpClient) {}
 
   logIn(userName: string, password: string): Observable<LoginResponseData> {
-    return this.http.post<LoginResponseData>(
-      'http://localhost:3000/api/auth/login',
-      { userName: userName, password: password }
-    );
+    return this.http.post<LoginResponseData>(BACKEND_URL + 'login', {
+      userName: userName,
+      password: password,
+    });
   }
 }

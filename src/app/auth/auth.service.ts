@@ -11,7 +11,6 @@ import { User } from './user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  updateError = new Subject<string>();
   updateLoadingStatus = new Subject<boolean>();
   updateUser = new ReplaySubject<User>(1);
   private token: undefined | null | string;
@@ -48,12 +47,10 @@ export class AuthService {
           const user = new User(decodedToken.userName);
 
           this.updateUser.next(user);
-          this.router.navigate(['/adminpanel/dashboard']);
+          this.router.navigate(['adminpanel/dashboard']);
         }
       },
       error: (err) => {
-        this.updateLoadingStatus.next(false);
-
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -70,6 +67,7 @@ export class AuthService {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           });
+        this.updateLoadingStatus.next(false);
       },
       complete: () => {
         this.updateLoadingStatus.next(false);

@@ -8,11 +8,12 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { LoadSpinner } from '../../shared/load-spinner/load-spinner.component';
+
 import { SettingService } from './setting.service';
 
 import { Product } from '../product/product.model';
 import { Setting } from './Setting.model';
-import { LoadSpinner } from '../../shared/load-spinner/load-spinner.component';
 
 @Component({
   selector: 'app-setting',
@@ -48,17 +49,28 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.updateProductSubscription =
       this.settingService.updateProducts.subscribe((products) => {
         this.products = products;
-        console.log(this.products);
       });
 
     this.updateSettingsSubscription =
       this.settingService.updateSettings.subscribe((settings) => {
         this.settings = settings;
 
-        this.settingForm.setValue({
-          featuredProduct: this.settings[0].value,
-          shippingFee: this.settings[1].value,
-        });
+        if (settings.length === 2) {
+          this.settingForm.setValue({
+            featuredProduct: this.settings[1].value.toString(),
+            shippingFee: this.settings[0].value,
+          });
+        } else if (settings.length === 1) {
+          if (settings[0].name === 'Featured Product') {
+            this.settingForm.patchValue({
+              featuredProduct: settings[0].value.toString(),
+            });
+          } else {
+            this.settingForm.patchValue({
+              shippingFee: settings[0].value,
+            });
+          }
+        }
       });
 
     this.updateLoadingStatusSubscription =
@@ -70,17 +82,56 @@ export class SettingComponent implements OnInit, OnDestroy {
   onSubmitSetting(): void {
     if (this.settingForm?.invalid) return;
 
-    const featuredProduct = new Setting(
-      'Featured Product',
-      this.settingForm.value.featuredProduct,
-      this.settings[0].id
-    );
+    let featuredProduct;
+    let shippingFee;
 
-    const shippingFee = new Setting(
-      'Shipping Fee',
-      this.settingForm.value.shippingFee,
-      this.settings[1].id
-    );
+    if (this.settings.length === 0) {
+      featuredProduct = new Setting(
+        'Featured Product',
+        this.settingForm.value.featuredProduct
+      );
+
+      shippingFee = new Setting(
+        'Shipping Fee',
+        this.settingForm.value.shippingFee
+      );
+    } else if (this.settings.length === 1) {
+      if (this.settings[0].name === 'Featured Product') {
+        featuredProduct = new Setting(
+          'Featured Product',
+          this.settingForm.value.featuredProduct,
+          this.settings[0].id
+        );
+
+        shippingFee = new Setting(
+          'Shipping Fee',
+          this.settingForm.value.shippingFee
+        );
+      } else {
+        featuredProduct = new Setting(
+          'Featured Product',
+          this.settingForm.value.featuredProduct
+        );
+
+        shippingFee = new Setting(
+          'Shipping Fee',
+          this.settingForm.value.shippingFee,
+          this.settings[0].id
+        );
+      }
+    } else {
+      featuredProduct = new Setting(
+        'Featured Product',
+        this.settingForm.value.featuredProduct,
+        this.settings[0].id
+      );
+
+      shippingFee = new Setting(
+        'Shipping Fee',
+        this.settingForm.value.shippingFee,
+        this.settings[1].id
+      );
+    }
 
     this.settingService.saveFeaturedProduct(featuredProduct);
     this.settingService.saveShippingFee(shippingFee);

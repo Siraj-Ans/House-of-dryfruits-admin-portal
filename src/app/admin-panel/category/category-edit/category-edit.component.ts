@@ -26,13 +26,12 @@ import { Category } from '../category.model';
 export class CategoryEditComponent implements OnDestroy {
   categories: Category[] = [];
   canExit = true;
-  editCategoryErrorMessage: undefined | string;
   selectedCategory: undefined | Category;
   selectedCategoryIndex: undefined | number;
   editCategoryForm!: FormGroup;
-  selectedCategorySubscription: undefined | Subscription;
-  categoriesSubscription: undefined | Subscription;
-  editCategoryErrorMessageSubscription: undefined | Subscription;
+  selectedCategorySubscription: Subscription | undefined;
+  categoriesSubscription: Subscription | undefined;
+  updateCanExitSubscription: Subscription | undefined;
 
   constructor(
     private categoryService: CategoryService,
@@ -47,10 +46,6 @@ export class CategoryEditComponent implements OnDestroy {
       categoryName: [null, Validators.required],
       parent: [null],
       properties: this.fb.array([]),
-    });
-
-    this.categoryService.updateEditCategoryErrorMessage.subscribe((errMsg) => {
-      this.editCategoryErrorMessage = errMsg;
     });
 
     this.categoriesSubscription =
@@ -89,6 +84,11 @@ export class CategoryEditComponent implements OnDestroy {
           }
         }
       });
+
+    this.updateCanExitSubscription =
+      this.categoryService.updateCanExit.subscribe((status) => {
+        this.canExit = status;
+      });
   }
 
   onChangeCategoryName(event: any): void {
@@ -108,7 +108,7 @@ export class CategoryEditComponent implements OnDestroy {
         this.canExit = false;
       else this.canExit = true;
     } else {
-      this.canExit = false;
+      this.canExit = true;
     }
   }
 
@@ -172,6 +172,6 @@ export class CategoryEditComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.selectedCategorySubscription?.unsubscribe();
     this.categoriesSubscription?.unsubscribe();
-    this.editCategoryErrorMessageSubscription?.unsubscribe();
+    this.updateCanExitSubscription?.unsubscribe();
   }
 }

@@ -27,7 +27,7 @@ export interface FetchProductResponse {
       __v: number;
       categoryName: string;
       properties: { property: string; values: string[] }[];
-    };
+    } | null;
     productImages: string[];
     description: string;
     priceInPKR: number;

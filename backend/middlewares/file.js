@@ -6,20 +6,31 @@ const MIME_TYPE = {
   "image/png": "png",
 };
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const isValid = MIME_TYPE[file.mimetype];
-    let error = new Error("Invalid mime type");
-    if (isValid) {
-      error = null;
-    }
-    cb(error, "productImages");
-  },
-  filename: (req, file, cb) => {
-    const name = file.originalname.toLowerCase().split(" ").join("-");
-    const ext = MIME_TYPE[file.mimetype];
-    cb(null, name + "-" + Date.now() + "." + ext);
-  },
-});
+const storage = multer.memoryStorage();
 
-module.exports = multer({ storage: storage }).array("productImages");
+const uploadMiddleware = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const isValid = MIME_TYPE[file.mimetype];
+    if (isValid) {
+      return cb(null, true);
+    } else {
+      return cb(new Error("Invalid mime type"));
+    }
+  },
+}).array("productImages");
+
+module.exports = uploadMiddleware;
+
+const prepareFilesForS3Upload = (req, res, next) => {
+  req.files = req.files.map((file) => ({
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    buffer: file.buffer,
+    filename: file.originalname.toLowerCase().split(" ").join("-"),
+  }));
+
+  next();
+};
+
+module.exports.prepareFilesForS3Upload = prepareFilesForS3Upload;

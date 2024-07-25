@@ -3,6 +3,7 @@ import { ReplaySubject, Subject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { CategoryDataStorageService } from './category-dataStorage.service';
+import { ToastService } from '../../toastr.service';
 
 import { Category } from './category.model';
 
@@ -15,14 +16,14 @@ export class CategoryService implements OnInit, OnDestroy {
     1
   );
   updatedEditMode = new Subject<string>();
-  updateAddCategoryErrorMessage = new Subject<string>();
-  updateDeleteCategoryErrorMessage = new Subject<string>();
-  updateEditCategoryErrorMessage = new Subject<string>();
   updatedEditModeSubscription: undefined | Subscription;
+  updateLoadingStatus = new ReplaySubject<boolean>(0);
+  updateCanExit = new Subject<boolean>();
 
   constructor(
     private categoryDataStorageService: CategoryDataStorageService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastService
   ) {}
 
   ngOnInit(): void {}
@@ -40,25 +41,65 @@ export class CategoryService implements OnInit, OnDestroy {
       next: (responseData) => {
         this.categories.push(responseData.category);
         this.updatedCategories.next(this.categories.slice());
+        this.toastr.showSuccess('Category Added!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
       },
       error: (err) => {
-        this.updateAddCategoryErrorMessage.next(err.error.message);
-        console.log('[Categories] Error: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
       },
       complete: () => {},
     });
   }
 
   getCategories(): void {
+    this.updateLoadingStatus.next(true);
     this.categoryDataStorageService.fetchCategories().subscribe({
       next: (responseData) => {
         this.categories = responseData.categories;
         this.updatedCategories.next(this.categories.slice());
       },
       error: (err) => {
-        console.log('[Categories] Error: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        this.updateLoadingStatus.next(false);
       },
-      complete: () => {},
+      complete: () => {
+        this.updateLoadingStatus.next(false);
+      },
     });
   }
 
@@ -67,10 +108,31 @@ export class CategoryService implements OnInit, OnDestroy {
       next: (responseData) => {
         this.categories.splice(index, 1);
         this.updatedCategories.next(this.categories.slice());
+        this.toastr.showSuccess('Category removed!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
       },
       error: (err) => {
-        this.updateDeleteCategoryErrorMessage.next(err.error.message);
-        console.log('[Categories] Error: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
       },
       complete: () => {},
     });
@@ -79,15 +141,37 @@ export class CategoryService implements OnInit, OnDestroy {
   editCategory(category: Category): void {
     this.categoryDataStorageService.updateCategory(category).subscribe({
       next: (responseData) => {
+        this.toastr.showSuccess('Category edited!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
         this.getCategories();
 
+        this.updateCanExit.next(true);
         this.editMode = 'no-edit';
         this.updatedEditMode.next('no-edit');
         this.router.navigateByUrl('adminpanel/categories');
       },
       error: (err) => {
-        this.updateEditCategoryErrorMessage.next(err.error.message);
-        console.log('[Categories] Error: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
       },
     });
   }

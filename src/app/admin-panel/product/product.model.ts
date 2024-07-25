@@ -6,7 +6,7 @@ export class Product {
       id: string;
       categoryName: string;
       properties: { property: string; values: string[] }[];
-    },
+    } | null,
     public productImages: string[],
     public description: string,
     public priceInPKR: number

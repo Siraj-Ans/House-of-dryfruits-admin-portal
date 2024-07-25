@@ -28,7 +28,7 @@ exports.login = (req, res) => {
           emailAddress: user.emailAddress,
           userName: user.userName,
         },
-        "7E4Yu@bx",
+        process.env.JWT_SECRET,
         {
           expiresIn: "1h",
         }

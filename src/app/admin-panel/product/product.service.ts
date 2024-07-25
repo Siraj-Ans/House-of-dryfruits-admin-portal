@@ -3,6 +3,7 @@ import { Subject, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { ProductDataStorageService } from './product-dataStorage.service';
+import { ToastService } from '../../toastr.service';
 
 import { Product } from './product.model';
 
@@ -10,16 +11,15 @@ import { Product } from './product.model';
 export class ProductService {
   products: Product[] = [];
   editAddMode = false;
-  updateEditProductErrorMessage = new Subject<string>();
-  updateAddProductErrorMessage = new Subject<string>();
-  updateLoading = new Subject<boolean>();
+  updateLoading = new ReplaySubject<boolean>(0);
   updateProducts = new Subject<Product[]>();
   selectedProduct = new ReplaySubject<{ product: Product; index: number }>(1);
   updateEditAddMode = new Subject<boolean>();
 
   constructor(
     private productDataStorageService: ProductDataStorageService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastService
   ) {}
 
   getEditAddMode(): boolean {
@@ -31,16 +31,36 @@ export class ProductService {
   }
 
   getProducts(): void {
+    this.updateLoading.next(true);
     this.productDataStorageService.fetchProducts().subscribe({
       next: (responseData) => {
+        console.log(responseData);
         this.products = responseData.products;
 
         this.updateProducts.next(this.products.slice());
       },
       error: (err) => {
-        console.log('[product] err: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        this.updateLoading.next(false);
       },
-      complete: () => {},
+      complete: () => {
+        this.updateLoading.next(false);
+      },
     });
   }
 
@@ -49,6 +69,13 @@ export class ProductService {
 
     this.productDataStorageService.createProduct(product).subscribe({
       next: (responseData) => {
+        this.toastr.showSuccess('Product saved!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
         const product = new Product(
           responseData.product.id,
           responseData.product.productName,
@@ -65,10 +92,27 @@ export class ProductService {
         this.router.navigate(['adminpanel/products']);
       },
       error: (err) => {
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
         this.updateLoading.next(false);
-        this.updateAddProductErrorMessage.next(err.error.message);
       },
-      complete: () => {},
+      complete: () => {
+        this.updateLoading.next(false);
+      },
     });
   }
 
@@ -77,9 +121,31 @@ export class ProductService {
       next: (responseData) => {
         this.products.splice(index, 1);
         this.updateProducts.next(this.products.slice());
+        this.toastr.showSuccess('Product removed!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
       },
       error: (err) => {
-        console.log('[products] Error: ', err);
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
       },
       complete: () => {},
     });
@@ -93,13 +159,37 @@ export class ProductService {
         this.updateProducts.next(this.products.slice());
         this.updateEditAddMode.next(false);
         this.updateLoading.next(false);
+        this.toastr.showSuccess('Product edited!', '', {
+          toastClass: 'success-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        });
         this.router.navigate(['adminpanel/products']);
       },
       error: (err) => {
+        if (!err.status)
+          this.toastr.showError('Server failed!', '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
+        else
+          this.toastr.showError(err.error.message, '', {
+            toastClass: 'error-toast',
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true,
+          });
         this.updateLoading.next(false);
-        this.updateEditProductErrorMessage.next(err.error.message);
       },
-      complete: () => {},
+      complete: () => {
+        this.updateLoading.next(false);
+      },
     });
   }
 }

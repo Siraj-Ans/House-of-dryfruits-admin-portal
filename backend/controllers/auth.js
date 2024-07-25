@@ -23,9 +23,13 @@ exports.login = (req, res) => {
           message: "User not found!",
         });
 
-      const jwtToken = jwt.sign({ userName: user.userName }, "7E4Yu@bx", {
-        expiresIn: "1h",
-      });
+      const jwtToken = jwt.sign(
+        { userName: user.userName },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1h",
+        }
+      );
 
       res.status(200).json({
         message: "User found!",

@@ -15,19 +15,12 @@ import { AuthService } from './auth.service';
   styleUrl: './auth.component.css',
 })
 export class AuthComponent implements OnInit, OnDestroy {
-  errorMessage: undefined | string;
-  errorMessageSubscription: undefined | Subscription;
   loading = false;
+  updateLoadingStatusSubscription: Subscription | undefined;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.errorMessageSubscription = this.authService.updateError.subscribe(
-      (errMsg) => {
-        this.errorMessage = errMsg;
-      }
-    );
-
     this.authService.updateLoadingStatus.subscribe((status) => {
       this.loading = status;
     });
@@ -38,6 +31,6 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.errorMessageSubscription?.unsubscribe();
+    this.updateLoadingStatusSubscription?.unsubscribe();
   }
 }

@@ -1,73 +1,93 @@
 <div
   class="flex flex-col bg-light px-5 py-7 h-full w-full rounded-md overflow-scroll overflow-x-hidden overflow-y-auto"
 >
-  <h1 class="text-3xl mb-5 font-bold text-dark-purple">Admins</h1>
+  <h1 class="text-2xl mb-5 font-bold text-dark-purple lg:text-3xl">Admins</h1>
 
   <form
-    (ngSubmit)="onCreateAdmin(adminForm)"
-    #adminForm="ngForm"
+    (ngSubmit)="onCreateAdmin()"
+    [formGroup]="adminForm"
     class="flex flex-col gap-3 mb-10"
   >
-    <p class="font-medium text-dark-purple text-xl">Add new admin</p>
+    <p class="font-medium text-dark-purple text-lg lg:text-xl">Add new admin</p>
     <div class="flex gap-4">
       <div class="flex flex-col">
-        <label class="font-medium text-light-purple text-base" for="userName"
+        <label
+          class="font-medium text-light-purple text-sm lg:text-base"
+          for="userName"
           >Username</label
         >
         <input
           id="userName"
-          ngModel
+          formControlName="userName"
           name="userName"
-          #userNameInput="ngModel"
           [ngClass]="{
-            borderBlink: userNameInput.invalid && userNameInput.touched
+            borderBlink:
+              adminForm.controls['userName'].invalid &&
+              adminForm.controls['userName'].touched
           }"
-          required
           placeholder="Username"
-          class="px-3 py-1 rounded font-medium border-2 border-gray-300"
+          class="px-2 rounded font-medium border-2 border-gray-300 lg:px-3 lg:py-1"
           type="text"
         />
       </div>
       <div class="flex flex-col">
-        <label class="font-medium text-light-purple text-base" for="password"
+        <label
+          class="font-medium text-light-purple text-sm lg:text-base"
+          for="password"
           >Password</label
         >
         <input
           id="password"
-          ngModel
           name="password"
-          #passwordInput="ngModel"
+          formControlName="password"
           [ngClass]="{
-            borderBlink: passwordInput.invalid && passwordInput.touched
+            borderBlink:
+              adminForm.controls['password'].invalid &&
+              adminForm.controls['password'].touched
           }"
-          required
           placeholder="Password"
-          class="px-3 py-1 rounded font-medium border-2 border-gray-300"
+          class="px-2 rounded font-medium border-2 border-gray-300 lg:px-3 lg:py-1"
           type="password"
         />
       </div>
-
-      <div class="flex items-end">
-        <button
-          (click)="onCreateAdmin(adminForm)"
-          [disabled]="adminForm.invalid"
-          type="submit"
-          class="text-white text-base px-3 py-2 font-medium rounded-md bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 transition-all duration-500"
-        >
-          Add admin
-        </button>
-      </div>
     </div>
-    @if(errorMessage) {
-    <p class="text-red-600 italic font-bold">{{ errorMessage }}</p>
-    }
+    <div class="flex items-end">
+      <button
+        [ngClass]="adminForm.invalid ? 'invalid-save' : 'valid-save'"
+        [disabled]="adminForm.invalid"
+        type="submit"
+        class="text-white w-fit text-sm px-2 py-1 font-medium rounded-md bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 transition-all duration-500 lg:text-base lg:px-3 lg:py-2"
+      >
+        {{ update ? "Update admin" : "Add admin" }}
+      </button>
+      @if(update) {
+      <button
+        (click)="onCancel()"
+        type="button"
+        class="text-white w-fit ml-3 text-sm px-2 py-1 font-medium rounded-md bg-gradient-to-r bg-red-500 hover:from-red-500 hover:to-red-900 transition-all duration-500 lg:text-base lg:px-3 lg:py-2"
+      >
+        Cancel
+      </button>
+      } @if(creatingAdmin) {
+      <div class="pb-2 pl-3">
+        <app-load-spinner></app-load-spinner>
+      </div>
+      }
+    </div>
   </form>
 
   <div class="flex flex-col gap-3">
-    <p class="font-medium text-dark-purple text-xl">Existing admins</p>
+    <p class="font-medium text-dark-purple text-lg lg:text-xl">
+      Existing admins
+    </p>
+    @if(loadingAdmins) {
+    <div class="flex bg-transparent items-center gap-2 justify-between">
+      <app-pulse-load-spinner></app-pulse-load-spinner>
+    </div>
+    }@else {
     <div class="w-4/5 shadow-xl bg-white">
       <h1
-        class="font-bold bg-blue-300 text-base text-dark-purple px-3 py-2 border-gray-600"
+        class="font-bold bg-blue-300 text-sm text-dark-purple px-3 py-2 border-gray-600 lg:text-base"
       >
         ADMIN USERNAMES
       </h1>
@@ -75,26 +95,26 @@
         @for(admin of admins; track admin.id; let i = $index) {
         <tr class="w-1/3 bg-gray-100">
           <td class="pl-2 py-2">
-            <p class="text-light-purple text-base font-medium">
+            <p class="text-light-purple text-sm font-medium lg:text-base">
               {{ admin.userName }}
             </p>
           </td>
           <td class="py-2">
-            <p class="text-light-purple text-base font-medium">
+            <p class="text-light-purple text-sm font-medium lg:text-base">
               {{ admin.dateAndTime }}
             </p>
           </td>
-          <td class="flex gap-5 justify-end py-2 pr-2">
+          <td class="flex gap-5 justify-end py-1 pr-1 lg:py-2 lg:pr-2">
             <mat-icon
-              (click)="onEditAdmin(admin.id)"
-              class="cursor-pointer w-10"
+              (click)="onEditAdmin(admin, i)"
+              class="cursor-pointer w-8 lg:w-10"
               aria-hidden="false"
               aria-label="Example edit_note icon"
               fontIcon="edit_note"
             ></mat-icon>
             <mat-icon
               (click)="onDeleteAdmin(admin.id, i)"
-              class="cursor-pointer text-red-500"
+              class="cursor-pointer w-8 lg:w-10 text-red-500"
               aria-hidden="false"
               aria-label="Example delete icon"
               fontIcon="delete"
@@ -104,5 +124,6 @@
         }
       </table>
     </div>
+    }
   </div>
 </div>

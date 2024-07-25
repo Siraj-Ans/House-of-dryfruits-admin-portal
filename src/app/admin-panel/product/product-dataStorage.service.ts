@@ -10,6 +10,10 @@ import {
   UpdateProductResponse,
 } from './ProductRes.model';
 
+import { environment } from '../../../environments/environment.development';
+
+const BACKEND_URL = environment.apiUrl + '/products/';
+
 @Injectable({ providedIn: 'root' })
 export class ProductDataStorageService {
   constructor(private http: HttpClient) {}
@@ -23,29 +27,30 @@ export class ProductDataStorageService {
         id: string;
         categoryName: string;
         properties: { property: string; values: string[] }[];
-      };
+      } | null;
       productImages: string[];
       description: string;
       priceInPKR: number;
     }[];
   }> {
     return this.http
-      .get<FetchProductResponse>(
-        'http://localhost:3000/api/products/fetchProducts'
-      )
+      .get<FetchProductResponse>(BACKEND_URL + 'fetchProducts')
       .pipe(
         map((res) => {
+          console.log(res);
           return {
             message: res.message,
             products: res.products.map((product) => {
               return {
                 id: product._id,
                 productName: product.productName,
-                productCategory: {
-                  id: product.productCategory._id,
-                  categoryName: product.productCategory.categoryName,
-                  properties: product.productCategory.properties,
-                },
+                productCategory: product.productCategory
+                  ? {
+                      id: product.productCategory._id,
+                      categoryName: product.productCategory.categoryName,
+                      properties: product.productCategory.properties,
+                    }
+                  : null,
                 productImages: product.productImages,
                 description: product.description,
                 priceInPKR: product.priceInPKR,
@@ -72,10 +77,7 @@ export class ProductDataStorageService {
     };
   }> {
     return this.http
-      .post<CreateProductReponse>(
-        'http://localhost:3000/api/products/createProduct',
-        product
-      )
+      .post<CreateProductReponse>(BACKEND_URL + 'createProduct', product)
       .pipe(
         map((res) => {
           return {
@@ -99,14 +101,14 @@ export class ProductDataStorageService {
 
   updatedProduct(updatedProduct: FormData): Observable<UpdateProductResponse> {
     return this.http.put<UpdateProductResponse>(
-      'http://localhost:3000/api/products/updateProduct',
+      BACKEND_URL + 'updateProduct',
       updatedProduct
     );
   }
 
   deleteProduct(productID: string): Observable<DeleteProductResponse> {
     return this.http.delete<DeleteProductResponse>(
-      'http://localhost:3000/api/products/deleteProduct/',
+      BACKEND_URL + 'deleteProduct/',
       {
         params: new HttpParams().set('productID', productID),
       }

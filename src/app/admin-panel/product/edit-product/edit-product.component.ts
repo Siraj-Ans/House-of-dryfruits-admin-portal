@@ -30,7 +30,7 @@ import { mimeType } from '../mime-type.validator';
 export class EditProductComponent implements OnInit, OnDestroy {
   loading = false;
   canExit = true;
-  errorMessage: undefined | string;
+  newImages: string[] = [];
   selectedProduct: undefined | Product;
   selectedProductIndex: undefined | number;
   categories: Category[] = [];
@@ -40,7 +40,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
   editProductForm!: FormGroup;
   selectedProductSubscription: undefined | Subscription;
   categoriesSubscription: undefined | Subscription;
-  errorMessageSubscription: undefined | Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -60,11 +59,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
       description: [null, Validators.required],
       priceInPKR: [null, Validators.required],
     });
-
-    this.errorMessageSubscription =
-      this.productSerive.updateEditProductErrorMessage.subscribe((errMsg) => {
-        this.errorMessage = errMsg;
-      });
 
     this.productSerive.updateLoading.subscribe((status) => {
       this.loading = status;
@@ -86,7 +80,11 @@ export class EditProductComponent implements OnInit, OnDestroy {
 
         this.editProductForm
           ?.get('productCategory')
-          ?.setValue(this.selectedProduct?.productCategory.id);
+          ?.setValue(
+            this.selectedProduct?.productCategory
+              ? this.selectedProduct?.productCategory.id
+              : null
+          );
 
         this.imagePaths = this.selectedProduct.productImages;
         this.existingImagePaths = [...this.selectedProduct.productImages];
@@ -110,12 +108,12 @@ export class EditProductComponent implements OnInit, OnDestroy {
   }
 
   onChangeProductCategory(event: Event): void {
-    if (
-      (<HTMLInputElement>event.target).value !==
-      this.selectedProduct?.productCategory.id
-    )
-      this.canExit = false;
-    else this.canExit = true;
+    // if (
+    //   (<HTMLInputElement>event.target).value !==
+    //   this.selectedProduct?.productCategory.id
+    // )
+    //   this.canExit = false;
+    // else this.canExit = true;
   }
 
   onChangeDescription(event: Event): void {
@@ -156,6 +154,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
       reader.onload = (e) => {
         this.editProductForm.get('productImages')?.disable();
         this.imagePaths.push(e.target!.result as string);
+        this.newImages.push(e.target!.result as string);
       };
 
       reader.onloadend = () => {
@@ -163,6 +162,26 @@ export class EditProductComponent implements OnInit, OnDestroy {
       };
 
       reader.readAsDataURL(files[i]);
+    }
+  }
+
+  onDeleteImage(
+    index: number,
+    imagePath: string,
+    editProductForm: Object
+  ): void {
+    const imagePathIndex = this.imagePaths.indexOf(imagePath);
+    this.imagePaths.splice(imagePathIndex, 1);
+
+    if (this.existingImagePaths.includes(imagePath)) {
+      const index = this.existingImagePaths.indexOf(imagePath);
+      this.existingImagePaths.splice(index, 1);
+    }
+
+    if (this.newImages.includes(imagePath)) {
+      const index = this.newImages.indexOf(imagePath);
+      this.newImages.splice(index, 1);
+      this.imageFiles?.splice(index, 1);
     }
   }
 
@@ -194,6 +213,5 @@ export class EditProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.selectedProductSubscription?.unsubscribe();
     this.categoriesSubscription?.unsubscribe();
-    this.errorMessageSubscription?.unsubscribe();
   }
 }

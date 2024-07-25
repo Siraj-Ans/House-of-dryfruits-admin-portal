@@ -17,7 +17,10 @@ const orderSchema = mongoose.Schema(
     address1: { type: String, requied: true },
     paymentMethod: { type: String, requied: true },
     productInfo: { type: [Object], required: true },
-    trackingId: { type: String, required: true },
+    paid: { type: Boolean, required: true },
+    fullfilled: { type: String, required: true },
+    productInfo: { type: [Object], required: true },
+    trackingId: { type: String },
     address2: { type: String },
   },
   {

@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:House-of-dryfruits": "node dist/house-of-dryfruits/server/server.mjs"
+    "serve:ssr:House-of-dryfruits-admin-portal": "node dist/house-of-dryfruits/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -16,6 +16,7 @@
     "@angular/common": "^18.0.0",
     "@angular/compiler": "^18.0.0",
     "@angular/core": "^18.0.0",
+    "@angular/fire": "^18.0.1",
     "@angular/forms": "^18.0.0",
     "@angular/material": "^18.0.0",
     "@angular/platform-browser": "^18.0.0",
@@ -24,8 +25,11 @@
     "@angular/router": "^18.0.0",
     "@angular/ssr": "^18.0.1",
     "angularcli": "^6.0.1",
+    "aws-sdk": "^2.1662.0",
     "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "firebase": "^10.12.4",
     "fs": "^0.0.1-security",
     "g": "^2.0.1",
     "jsonwebtoken": "^9.0.2",

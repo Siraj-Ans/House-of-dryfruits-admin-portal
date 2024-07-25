@@ -21,7 +21,6 @@ export class SettingService {
   ) {}
 
   getProducts(): void {
-    this.updateLoadingStatus.next(true);
     this.settingDataStorageService.fetchProducts().subscribe({
       next: (res) => {
         this.updateProducts.next(res.products);
@@ -43,22 +42,18 @@ export class SettingService {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           });
-        this.updateLoadingStatus.next(false);
       },
-      complete: () => {
-        this.updateLoadingStatus.next(false);
-      },
+      complete: () => {},
     });
   }
 
   getSettings(): void {
-    // this.updateLoadingStatus.next(true);
     this.settingDataStorageService.fetchSettings().subscribe({
       next: (res) => {
         this.updateSettings.next(res.settings);
-        console.log(res);
       },
       error: (err) => {
+        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -75,11 +70,8 @@ export class SettingService {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           });
-        // this.updateLoadingStatus.next(false);
       },
-      complete: () => {
-        // this.updateLoadingStatus.next(false);
-      },
+      complete: () => {},
     });
   }
 
@@ -87,16 +79,16 @@ export class SettingService {
     this.updateLoadingStatus.next(true);
     this.settingDataStorageService.saveFeaturedProduct(setting).subscribe({
       next: (res) => {
-        this.toastr.showSuccess('Featured product set!', '', {
+        this.toastr.showSuccess('Setting set!', '', {
           toastClass: 'success-toast',
           timeOut: 3000,
           extendedTimeOut: 1000,
           positionClass: 'toast-top-right',
           preventDuplicates: true,
         });
-        console.log(res);
       },
       error: (err) => {
+        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -122,19 +114,10 @@ export class SettingService {
   }
 
   saveShippingFee(setting: Setting): void {
-    this.updateLoadingStatus.next(true);
     this.settingDataStorageService.saveShippingFee(setting).subscribe({
-      next: (res) => {
-        this.toastr.showSuccess('Shipping fee set!', '', {
-          toastClass: 'success-toast',
-          timeOut: 3000,
-          extendedTimeOut: 1000,
-          positionClass: 'toast-top-right',
-          preventDuplicates: true,
-        });
-        console.log(res);
-      },
+      next: (res) => {},
       error: (err) => {
+        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -151,11 +134,8 @@ export class SettingService {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           });
-        this.updateLoadingStatus.next(false);
       },
-      complete: () => {
-        this.updateLoadingStatus.next(false);
-      },
+      complete: () => {},
     });
   }
 }

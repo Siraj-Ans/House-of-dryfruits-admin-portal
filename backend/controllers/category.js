@@ -1,4 +1,5 @@
 const Category = require("../models/category");
+const Product = require("../models/product");
 
 exports.createCategory = (req, res) => {
   async function saveCategoryOnDB() {
@@ -108,6 +109,26 @@ exports.updateCategory = (req, res) => {
           message: "Catgory ID missing!",
         });
 
+      const category = await Category.findOne({
+        _id: req.body.id,
+      });
+
+      let updated = false;
+
+      if (req.body.categoryName !== category.categoryName) {
+        updated = true;
+        console.log("1");
+      } else if (req.body.parent != category.parent) {
+        console.log("2");
+        updated = true;
+      }
+
+      if (!updated)
+        return res.status(409).json({
+          message:
+            "The category details you entered already exist. Please try again.",
+        });
+
       let result;
 
       if (req.body.parent) {
@@ -131,11 +152,6 @@ exports.updateCategory = (req, res) => {
         );
       }
 
-      if (result.modifiedCount < 1)
-        return res.status(500).json({
-          message: "Could not update the category",
-        });
-
       res.status(200).json({
         message: "Successfully updated the category",
       });
@@ -152,12 +168,18 @@ exports.updateCategory = (req, res) => {
 exports.deleteCategory = (req, res) => {
   async function removeCategoryFromDB() {
     try {
-      if (!req.query.categoryID)
+      const categoryId = req.query.categoryID;
+
+      if (!categoryId)
         return res.status(400).json({
           message: "categoryID missing",
         });
 
-      const result = await Category.deleteOne({ _id: req.query.categoryID });
+      const result = await Category.deleteOne({ _id: categoryId });
+
+      await Product.deleteMany({
+        productCategory: categoryId,
+      });
 
       if (!result.deletedCount)
         return res.status(500).json({

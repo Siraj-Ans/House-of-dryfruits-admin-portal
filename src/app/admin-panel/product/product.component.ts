@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
 
+import { PulseLoadSpinnerComponent } from '../../shared/pulse-load-spinner/pulse-load-spinner.component';
+
 import { ProductService } from './product.service';
 
 import { Product } from './product.model';
@@ -11,14 +13,21 @@ import { Product } from './product.model';
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [MatIconModule, CommonModule, RouterModule],
+  imports: [
+    MatIconModule,
+    CommonModule,
+    RouterModule,
+    PulseLoadSpinnerComponent,
+  ],
   templateUrl: './product.component.html',
 })
 export class ProductComponent {
   products: Product[] = [];
+  loading = false;
   editAddMode = false;
   productsSubscription: undefined | Subscription;
   editAddModeSubscription: undefined | Subscription;
+  updateLoadingStatusSubscription: undefined | Subscription;
 
   constructor(
     private productService: ProductService,
@@ -39,6 +48,11 @@ export class ProductComponent {
       this.productService.updateEditAddMode.subscribe((mode) => {
         this.editAddMode = mode;
       });
+
+    this.updateLoadingStatusSubscription =
+      this.productService.updateLoading.subscribe((status) => {
+        this.loading = status;
+      });
   }
 
   onAddProduct(): void {
@@ -48,6 +62,7 @@ export class ProductComponent {
       relativeTo: this.activatedRoute,
     });
   }
+
   onEditProduct(product: Product, index: number): void {
     this.productService.updateEditAddMode.next(true);
     this.productService.editAddMode = true;
@@ -60,11 +75,14 @@ export class ProductComponent {
       relativeTo: this.activatedRoute,
     });
   }
+
   onDeleteProduct(productID: string, index: number): void {
     this.productService.removeProduct(productID, index);
   }
+
   ngOnDestroy(): void {
     this.productsSubscription?.unsubscribe();
     this.editAddModeSubscription?.unsubscribe();
+    this.updateLoadingStatusSubscription?.unsubscribe();
   }
 }

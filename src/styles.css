@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 .warning-toast {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: #ffc107; /* Yellow background */
   color: #333; /* Darker text for contrast */
   font-weight: bold; /* Emphasize the text */
@@ -12,6 +15,9 @@
 }
 
 .error-toast {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: #f44336; /* Red background for error */
   color: black; /* White text for high contrast */
   font-weight: bold; /* Emphasize the text */
@@ -21,6 +27,9 @@
 }
 
 .success-toast {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: #4caf50; /* Green background for success */
   color: #fff; /* White text for high contrast */
   font-weight: bold; /* Emphasize the text */

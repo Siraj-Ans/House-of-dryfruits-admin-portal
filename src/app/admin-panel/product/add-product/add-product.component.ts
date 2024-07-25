@@ -29,14 +29,12 @@ import { mimeType } from '../mime-type.validator';
 export class AddProductComponent implements OnInit, OnDestroy {
   loading = false;
   canExit = true;
-  errorMessage: undefined | string;
   categories: Category[] = [];
   imagePaths: string[] = [];
   imageFiles: undefined | File[] = [];
   productForm!: FormGroup;
   categoriesSubscription: undefined | Subscription;
   loadingSubscription: undefined | Subscription;
-  errorMessageSubscription: undefined | Subscription;
 
   constructor(
     private router: Router,
@@ -55,11 +53,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
       description: [null, Validators.required],
       priceInPKR: [null, Validators.required],
     });
-
-    this.errorMessageSubscription =
-      this.productSerive.updateAddProductErrorMessage.subscribe((errMsg) => {
-        this.errorMessage = errMsg;
-      });
 
     this.loadingSubscription = this.productSerive.updateLoading.subscribe(
       (status) => {
@@ -119,7 +112,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditProduct(): void {
+  onDeleteImage(index: number): void {
+    this.imagePaths.splice(index, 1);
+  }
+
+  onAddProduct(): void {
     if (this.productForm.invalid) return;
 
     this.canExit = true;
@@ -133,7 +130,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.imageFiles?.forEach((file) => {
       formData.append('productImages', file);
     });
-
     this.productSerive.addProduct(formData);
   }
 

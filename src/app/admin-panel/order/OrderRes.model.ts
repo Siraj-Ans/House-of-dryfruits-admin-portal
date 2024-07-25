@@ -18,8 +18,15 @@ export interface FetchOrders {
       quantity: number;
       productsTotal: number;
     }[];
+    paid: boolean;
+    fullfilled: boolean;
+    trackingId: string;
     createdAt: string;
     updatedAt: string;
     address2?: string;
   }[];
+}
+
+export interface UpdateOrderPaidResponse {
+  message: string;
 }

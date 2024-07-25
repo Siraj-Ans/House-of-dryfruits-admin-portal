@@ -5,26 +5,29 @@
   <button
     routerLink="edit-product"
     (click)="onAddProduct()"
-    class="font-medium text-white px-3 py-2 rounded-md mb-3 w-fit bg-gradient-to-r bg-green-500 text-base hover:from-green-500 hover:to-green-900"
+    class="font-medium text-white text-base px-2 py-1 rounded-md mb-3 w-fit bg-gradient-to-r bg-green-500 hover:from-green-500 hover:to-green-900 lg:text-base lg:px-3 lg:py-2"
   >
     Add new product
   </button>
-  } @if(!editAddMode) {
-
+  } @if(!editAddMode) { @if(loading) {
+  <div class="flex bg-transparent items-center gap-2 justify-between">
+    <app-pulse-load-spinner></app-pulse-load-spinner>
+  </div>
+  } @else {
   <div class="flex flex-col shadow-lg w-4/5">
     <div class="text-base bg-blue-300 px-2 py-2">
-      <h1 class="text-base font-bold text-dark-purple">Products</h1>
+      <h1 class="text-sm font-bold text-dark-purple lg:text-base">Products</h1>
     </div>
     @for(product of products; track product.id; let i = $index) {
     <div class="flex px-3 py-2 items-center justify-between">
-      <p class="text-light-purple text-base font-medium">
+      <p class="text-light-purple text-sm font-medium lg:text-base">
         {{ product.productName }}
       </p>
       <div class="flex gap-3 items-center">
         <div class="flex items-center">
           <mat-icon
             (click)="onEditProduct(product, i)"
-            class="cursor-pointer w-10"
+            class="cursor-pointer w-8 lg:w-10"
             aria-hidden="false"
             aria-label="Example edit_note icon"
             fontIcon="edit_note"
@@ -33,7 +36,7 @@
         <div class="flex items-center">
           <mat-icon
             (click)="onDeleteProduct(product.id, i)"
-            class="cursor-pointer text-red-500"
+            class="cursor-pointer text-red-500 w-8 lg:w-10"
             aria-hidden="false"
             aria-label="Example delete icon"
             fontIcon="delete"
@@ -43,7 +46,7 @@
     </div>
     }
   </div>
-  }
+  } }
 
   <router-outlet></router-outlet>
 </div>

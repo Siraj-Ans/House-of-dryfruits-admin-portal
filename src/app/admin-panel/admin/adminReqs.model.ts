@@ -23,3 +23,7 @@ export interface fetchAdminsResponse {
 export interface deleteAdminResponse {
   message: string;
 }
+
+export interface UpdateAdminResponse {
+  message: string;
+}

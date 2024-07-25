@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmitProduct()"
   class="flex flex-col text-light-purple gap-6 mb-6"
 >
-  <h1 class="text-3xl text-dark-purple font-bold">Edit Product</h1>
+  <h1 class="text-2xl text-dark-purple font-bold lg:text-3xl">Edit Product</h1>
   <div class="flex flex-col gap-1">
     <label class="font-medium" for="productName">Product name</label>
     <input
@@ -16,7 +16,7 @@
       formControlName="productName"
       id="productName"
       placeholder="Product Name"
-      class="text-light-purple text-base px-2 py-1 w-min border-2 border-gray-300"
+      class="text-light-purple text-sm px-2 py-1 w-min border-2 border-gray-300 lg:text-base"
       type="text"
     />
     @if(editProductForm.controls['productName'].invalid &&
@@ -34,7 +34,7 @@
           editProductForm.controls['productCategory'].touched
       }"
       formControlName="productCategory"
-      class="text-base text-light-purple font-medium w-max h-9 px-2 py-1 rounded border-2 border-gray-300"
+      class="text-sm text-light-purple font-medium w-max h-9 px-2 py-1 rounded border-2 border-gray-300 lg:text-base"
     >
       <option value="null">Uncategorized</option>
       @for(category of categories; track category.id; let i = $index) {
@@ -52,12 +52,23 @@
     <label class="font-medium" for="category">Photos</label>
     <div class="flex w-full">
       <!-- @for(imagePath of imagePaths; track i; let i = $index) { -->
-      <img
-        *ngFor="let imagePath of imagePaths"
-        class="w-24 h-24 mr-2 rounded-md object-contain"
-        [src]="imagePath"
-        alt="Cannot get product image"
-      />
+      <div
+        *ngFor="let imagePath of imagePaths; let i = index"
+        class="relative flex"
+      >
+        <img
+          class="w-24 h-24 rounded-md object-contain"
+          [src]="imagePath"
+          alt="Cannot get product image"
+        />
+        <mat-icon
+          (click)="onDeleteImage(i, imagePath, editProductForm.value)"
+          class="absolute top-2 right-2 cursor-pointer text-red-900 hover:text-red-300"
+          aria-hidden="false"
+          aria-label="Example delete icon"
+          fontIcon="delete"
+        ></mat-icon>
+      </div>
       <!-- } -->
 
       <label
@@ -142,6 +153,7 @@
     </button>
     <button
       [disabled]="editProductForm.invalid"
+      [ngClass]="editProductForm.invalid ? 'invalid-save' : 'valid-save'"
       type="submit"
       class="font-medium w-24 text-white px-3 py-2 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900"
     >
@@ -152,7 +164,4 @@
 
     }
   </div>
-  @if(errorMessage) {
-  <p class="text-red-600 italic font-bold">{{ errorMessage }}</p>
-  }
 </form>
