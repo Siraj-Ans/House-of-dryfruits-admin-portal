@@ -34,11 +34,13 @@
             borderBlink: password.touched && password.invalid
           }"
           required
+          [minlength]="7"
           name="password"
           class="px-2 py-1 border-2 rounded"
           type="password"
         />
       </div>
+
       <div class="flex items-center gap-2 justify-between">
         <button
           [ngClass]="form.invalid ? 'invalid-save' : 'valid-save'"
