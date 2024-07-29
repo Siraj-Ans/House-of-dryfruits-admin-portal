@@ -57,17 +57,17 @@ export class SettingComponent implements OnInit, OnDestroy {
 
         if (settings.length === 2) {
           this.settingForm.setValue({
-            featuredProduct: this.settings[1].value.toString(),
-            shippingFee: this.settings[0].value,
+            featuredProduct: this.settings[0].value,
+            shippingFee: this.settings[1].value,
           });
         } else if (settings.length === 1) {
           if (settings[0].name === 'Featured Product') {
             this.settingForm.patchValue({
-              featuredProduct: settings[0].value.toString(),
+              featuredProduct: settings[0].value,
             });
           } else {
             this.settingForm.patchValue({
-              shippingFee: settings[0].value,
+              shippingFee: settings[1].value,
             });
           }
         }
@@ -82,6 +82,10 @@ export class SettingComponent implements OnInit, OnDestroy {
   onSubmitSetting(): void {
     if (this.settingForm?.invalid) return;
 
+    console.log(
+      typeof this.settingForm.value.shippingFee,
+      typeof this.settingForm.value.featuredProduct
+    );
     let featuredProduct;
     let shippingFee;
 

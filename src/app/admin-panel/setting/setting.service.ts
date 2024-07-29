@@ -50,6 +50,7 @@ export class SettingService {
   getSettings(): void {
     this.settingDataStorageService.fetchSettings().subscribe({
       next: (res) => {
+        console.log(res);
         this.updateSettings.next(res.settings);
       },
       error: (err) => {

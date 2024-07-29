@@ -1,12 +1,12 @@
 const Setting = require("../models/setting");
 const Product = require("../models/product");
+const { isError } = require("util");
 
 exports.saveFeaturedProduct = (req, res) => {
   async function saveSettingsOnDB() {
     try {
       const name = req.body.name;
       const value = req.body.value;
-      const id = req.body.id;
 
       const check = await Setting.findOne({
         name: name,
@@ -17,17 +17,16 @@ exports.saveFeaturedProduct = (req, res) => {
       if (check) {
         result = await Setting.updateOne(
           {
-            _id: id,
+            _id: check._id,
           },
           {
-            _id: id,
-            name: name,
+            _id: check._id,
             value: value,
           }
         );
 
         return res.status(200).json({
-          message: "Successfully updated the featured product!",
+          message: "Successfully updated the shipping fee!",
         });
       }
 
@@ -36,7 +35,7 @@ exports.saveFeaturedProduct = (req, res) => {
         value: value,
       });
 
-      result = await settings.save();
+      await settings.save();
 
       res.status(200).json({
         message: "successfully saved the featured product!",
@@ -67,31 +66,30 @@ exports.saveShippingFee = (req, res) => {
       if (check) {
         result = await Setting.updateOne(
           {
-            _id: id,
+            _id: check._id,
           },
           {
-            _id: id,
-            name: name,
+            _id: check._id,
             value: value,
           }
         );
 
         return res.status(200).json({
-          message: "Successfully updated the shipping fee!",
+          message: "Successfully updated the featured product!",
         });
       }
-
       const settings = new Setting({
         name: name,
         value: value,
       });
 
-      result = await settings.save();
+      await settings.save();
 
       res.status(200).json({
         message: "successfully saved the shipping fee!",
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Server failed to save the shipping fee!",
       });
@@ -132,8 +130,9 @@ exports.fetchFeaturedProduct = (req, res) => {
           message: "No featured product found!",
         });
       else {
+        console.log(result.value);
         const featuredProduct = await Product.findOne({
-          _id: result.value,
+          _id: result.value.toString(),
         });
 
         res.status(200).json({
@@ -141,9 +140,10 @@ exports.fetchFeaturedProduct = (req, res) => {
           featuredProduct: featuredProduct,
         });
       }
-    } catch {
+    } catch (err) {
+      console.log("err: ", err);
       res.status(500).json({
-        message: "Server failed to fetch featured product!",
+        message: "Server failed to fetch the featured product!",
       });
     }
   }
@@ -162,7 +162,8 @@ exports.fetchShippingFee = (req, res) => {
         message: "Successfully fetched the shipping fee",
         shippingFee: +result.value,
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Server failed to fetch shipping fee",
       });
