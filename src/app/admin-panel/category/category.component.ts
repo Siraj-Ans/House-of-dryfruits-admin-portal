@@ -98,7 +98,6 @@ export class CategoryComponent implements OnDestroy {
       category: category,
       index: index,
     });
-
     this.router.navigate(['edit-category', category.id], {
       relativeTo: this.activatedRoute,
     });

@@ -26,7 +26,7 @@ import { Category } from '../category.model';
 export class CategoryEditComponent implements OnDestroy {
   categories: Category[] = [];
   canExit = true;
-  selectedCategory: undefined | Category;
+  selectedCategory: Category | undefined;
   selectedCategoryIndex: undefined | number;
   editCategoryForm!: FormGroup;
   selectedCategorySubscription: Subscription | undefined;
@@ -130,7 +130,7 @@ export class CategoryEditComponent implements OnDestroy {
 
     let category: Category;
 
-    if (this.editCategoryForm.value.parent) {
+    if (this.editCategoryForm.value.parent != 'null') {
       category = new Category(
         this.selectedCategory!.id,
         this.editCategoryForm.value.categoryName,

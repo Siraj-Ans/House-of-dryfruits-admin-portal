@@ -14,22 +14,34 @@
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-light-purple font-medium">TODAY</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">2</p>
-      <p class="font-medium text-light-purple">2 orders today</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ ordersToday.length }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersToday.length }} orders today
+      </p>
     </div>
     <div
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-light-purple font-medium">THIS WEEK</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">2</p>
-      <p class="font-medium text-light-purple">2 orders this week</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ ordersWeek.length }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersWeek.length }} orders this week
+      </p>
     </div>
     <div
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-light-purple font-medium">THIS MONTH</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">2</p>
-      <p class="font-medium text-light-purple">2 orders this month</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ ordersMonth.length }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersMonth.length }} orders this month
+      </p>
     </div>
   </section>
 
@@ -39,22 +51,34 @@
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-light-purple font-medium">TODAY</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">Rs 2</p>
-      <p class="font-medium text-light-purple">2 orders today</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ this.ordersTotal(ordersToday) }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersToday.length }} orders today
+      </p>
     </div>
     <div
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-light-purple text-md font-medium">THIS WEEK</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">Rs 2</p>
-      <p class="font-medium text-light-purple">2 this week</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ this.ordersTotal(ordersToday) }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersWeek.length }} this week
+      </p>
     </div>
     <div
       class="flex flex-col text-center grow bg-white gap-2 rounded-sm w-36 py-3 h-fit box-shadow lg:w-44"
     >
       <p class="text-dark-purple text-md font-medium">THIS MONTH</p>
-      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">Rs 2</p>
-      <p class="font-medium text-light-purple">2 this month</p>
+      <p class="text-2xl font-bold text-blue-700 lg:text-3xl">
+        {{ this.ordersTotal(ordersToday) }}
+      </p>
+      <p class="font-medium text-light-purple">
+        {{ ordersMonth.length }} this month
+      </p>
     </div>
   </section>
 </div>

@@ -2,11 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
-import {
-  FetchOrders,
-  MarkOrderAsCompletedResponse,
-  UpdateOrderPaidResponse,
-} from './OrderRes.model';
+import { FetchOrdersResponse } from './DashboardRes.model';
 
 import { environment } from '../../../environments/environment.development';
 
@@ -15,7 +11,7 @@ const BACKEND_URL = environment.apiUrl + '/orders/';
 @Injectable({
   providedIn: 'root',
 })
-export class OrderDataStorageService {
+export class DashboardDataStorageService {
   constructor(private http: HttpClient) {}
 
   fetchOrders(): Observable<{
@@ -46,7 +42,7 @@ export class OrderDataStorageService {
       address2?: string;
     }[];
   }> {
-    return this.http.get<FetchOrders>(BACKEND_URL + 'fetchOrders').pipe(
+    return this.http.get<FetchOrdersResponse>(BACKEND_URL + 'fetchOrders').pipe(
       map((res) => {
         return {
           message: res.message,
@@ -75,35 +71,6 @@ export class OrderDataStorageService {
           }),
         };
       })
-    );
-  }
-
-  updateOrderStatus(
-    paidStatus: string,
-    shipmentStatus: string,
-    trackingId: string,
-    orderId: string
-  ): Observable<{
-    message: string;
-  }> {
-    console.log(paidStatus, shipmentStatus, trackingId);
-
-    return this.http.put<UpdateOrderPaidResponse>(BACKEND_URL + 'updateOrder', {
-      paidStatus: paidStatus,
-      shipmentStatus: shipmentStatus,
-      trackingId: trackingId,
-      orderId: orderId,
-    });
-  }
-
-  markOrderAsCompleted(orderId: string): Observable<{
-    message: string;
-  }> {
-    return this.http.put<MarkOrderAsCompletedResponse>(
-      BACKEND_URL + 'markOrderAsCompleted',
-      {
-        orderId: orderId,
-      }
     );
   }
 }

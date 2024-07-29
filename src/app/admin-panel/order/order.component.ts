@@ -79,6 +79,10 @@ export class OrderComponent implements OnInit, OnDestroy {
     );
   }
 
+  onCancelUpdate(): void {
+    this.updateMode = false;
+  }
+
   onSubmit(): void {
     if (this.orderForm.invalid) return;
 
@@ -88,6 +92,16 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.orderForm.value.trackingId,
       this.selectedOrderId!
     );
+  }
+
+  onMarkComplete(orderId: string): void {
+    const ans = confirm(
+      'Once marked as completed, you cannot access the order again! are you sure you want to continue?'
+    );
+
+    if (ans) {
+      this.orderService.markOrderAsCompleted(orderId);
+    }
   }
 
   onUpdateProductStatus(i: number): void {

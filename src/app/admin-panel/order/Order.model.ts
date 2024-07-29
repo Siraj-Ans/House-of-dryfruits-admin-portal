@@ -19,6 +19,7 @@ export class Order {
     public paid: boolean,
     public fullfilled: boolean,
     public trackingId: string | undefined,
+    public completed: boolean,
     public createdAt: string,
     public updatedAt: string,
     public address2?: string

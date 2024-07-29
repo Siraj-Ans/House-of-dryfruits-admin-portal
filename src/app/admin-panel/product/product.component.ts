@@ -20,6 +20,7 @@ import { Product } from './product.model';
     PulseLoadSpinnerComponent,
   ],
   templateUrl: './product.component.html',
+  styleUrl: './product.component.css',
 })
 export class ProductComponent {
   products: Product[] = [];

@@ -14,6 +14,7 @@ import { LoadSpinner } from '../../../shared/load-spinner/load-spinner.component
 
 import { CategoryService } from '../../category/category.service';
 import { ProductService } from '../product.service';
+import { ToastService } from '../../../toastr.service';
 
 import { Category } from '../../category/category.model';
 import { Product } from '../product.model';
@@ -35,7 +36,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
   selectedProductIndex: undefined | number;
   categories: Category[] = [];
   imagePaths: string[] = [];
-  imageFiles: undefined | File[] = [];
+  imageFiles: File[] = [];
   existingImagePaths: string[] = [];
   editProductForm!: FormGroup;
   selectedProductSubscription: undefined | Subscription;
@@ -46,7 +47,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
     private router: Router,
     private productSerive: ProductService,
     private fb: FormBuilder,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private toastr: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -140,6 +142,34 @@ export class EditProductComponent implements OnInit, OnDestroy {
   }
 
   onImagePreview(event: Event): void {
+    if ((<HTMLInputElement>event.target).files!.length > 5)
+      return this.toastr.showError(
+        'You cannot select more than 5 pictures',
+        '',
+        {
+          toastClass: 'error-toast',
+          timeOut: 3000,
+          extendedTimeOut: 1000,
+          positionClass: 'toast-top-right',
+          preventDuplicates: true,
+        }
+      );
+
+    if (
+      this.imageFiles.length +
+        (<HTMLInputElement>event.target).files!.length +
+        this.existingImagePaths.length >
+      5
+    ) {
+      return this.toastr.showError('Image limit exceeds!', '', {
+        toastClass: 'error-toast',
+        timeOut: 3000,
+        extendedTimeOut: 1000,
+        positionClass: 'toast-top-right',
+        preventDuplicates: true,
+      });
+    }
+
     let files = (<HTMLInputElement>event.target).files!;
 
     for (let i = 0; i < files.length; i++) {

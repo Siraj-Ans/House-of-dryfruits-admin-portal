@@ -39,8 +39,10 @@ export class CategoryService implements OnInit, OnDestroy {
   addCategory(category: Category): void {
     this.categoryDataStorageService.createCategory(category).subscribe({
       next: (responseData) => {
-        this.categories.push(responseData.category);
-        this.updatedCategories.next(this.categories.slice());
+        // this.categories.push(responseData.category);
+        // this.updatedCategories.next(this.categories.slice());
+
+        this.getCategories();
         this.toastr.showSuccess('Category Added!', '', {
           toastClass: 'success-toast',
           timeOut: 3000,
@@ -106,8 +108,9 @@ export class CategoryService implements OnInit, OnDestroy {
   removeCategory(index: number, categoryID: string): void {
     this.categoryDataStorageService.deleteCategory(categoryID).subscribe({
       next: (responseData) => {
-        this.categories.splice(index, 1);
-        this.updatedCategories.next(this.categories.slice());
+        // this.categories.splice(index, 1);
+        // this.updatedCategories.next(this.categories.slice());
+        this.getCategories();
         this.toastr.showSuccess('Category removed!', '', {
           toastClass: 'success-toast',
           timeOut: 3000,
@@ -148,7 +151,6 @@ export class CategoryService implements OnInit, OnDestroy {
           positionClass: 'toast-top-right',
           preventDuplicates: true,
         });
-        this.getCategories();
 
         this.updateCanExit.next(true);
         this.editMode = 'no-edit';

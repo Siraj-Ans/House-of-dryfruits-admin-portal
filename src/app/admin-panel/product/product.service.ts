@@ -34,7 +34,6 @@ export class ProductService {
     this.updateLoading.next(true);
     this.productDataStorageService.fetchProducts().subscribe({
       next: (responseData) => {
-        console.log(responseData);
         this.products = responseData.products;
 
         this.updateProducts.next(this.products.slice());
@@ -85,8 +84,9 @@ export class ProductService {
           responseData.product.priceInPKR
         );
 
-        this.products.push(product);
-        this.updateProducts.next(this.products.slice());
+        this.getProducts();
+        // this.products.push(product);
+        // this.updateProducts.next(this.products.slice());
         this.updateEditAddMode.next(false);
         this.updateLoading.next(false);
         this.router.navigate(['adminpanel/products']);
@@ -119,8 +119,9 @@ export class ProductService {
   removeProduct(productID: string, index: number): void {
     this.productDataStorageService.deleteProduct(productID).subscribe({
       next: (responseData) => {
-        this.products.splice(index, 1);
-        this.updateProducts.next(this.products.slice());
+        // this.products.splice(index, 1);
+        // this.updateProducts.next(this.products.slice());
+        this.getProducts();
         this.toastr.showSuccess('Product removed!', '', {
           toastClass: 'success-toast',
           timeOut: 3000,
@@ -156,7 +157,7 @@ export class ProductService {
     this.productDataStorageService.updatedProduct(updatedProduct).subscribe({
       next: () => {
         this.getProducts();
-        this.updateProducts.next(this.products.slice());
+        // this.updateProducts.next(this.products.slice());
         this.updateEditAddMode.next(false);
         this.updateLoading.next(false);
         this.toastr.showSuccess('Product edited!', '', {

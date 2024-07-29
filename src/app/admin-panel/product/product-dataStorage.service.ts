@@ -37,7 +37,6 @@ export class ProductDataStorageService {
       .get<FetchProductResponse>(BACKEND_URL + 'fetchProducts')
       .pipe(
         map((res) => {
-          console.log(res);
           return {
             message: res.message,
             products: res.products.map((product) => {

@@ -1,4 +1,4 @@
-export interface FetchOrders {
+export interface FetchOrdersResponse {
   message: string;
   orders: {
     _id: string;
@@ -26,11 +26,4 @@ export interface FetchOrders {
     updatedAt: string;
     address2?: string;
   }[];
-}
-
-export interface UpdateOrderPaidResponse {
-  message: string;
-}
-export interface MarkOrderAsCompletedResponse {
-  message: string;
 }
