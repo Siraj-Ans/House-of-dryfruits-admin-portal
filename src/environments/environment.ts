@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://house-of-dryfruits-admin-portal.onrender.com/api',
+  apiUrl: 'http://localhost:3000/api',
 };

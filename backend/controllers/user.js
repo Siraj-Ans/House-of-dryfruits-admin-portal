@@ -4,6 +4,7 @@ const User = require("../models/user");
 exports.login = (req, res) => {
   async function findAdminOnDB() {
     try {
+      console.log(req.body);
       if (!(await User.findOne({ emailAddress: req.body.emailAddress })))
         return res.status(400).json({
           message: "User not found!",

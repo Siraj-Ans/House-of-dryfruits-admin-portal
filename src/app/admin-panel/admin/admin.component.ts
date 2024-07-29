@@ -96,7 +96,9 @@ export class AdminComponent implements OnDestroy {
   }
 
   onDeleteAdmin(id: string, index: number): void {
-    this.adminService.removeAdmin(id, index);
+    const ans = confirm('Are you sure you want to delete the admin?');
+
+    if (ans) this.adminService.removeAdmin(id, index);
   }
 
   onEditAdmin(admin: Admin, index: number): void {

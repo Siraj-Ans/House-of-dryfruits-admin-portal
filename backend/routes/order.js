@@ -7,6 +7,12 @@ router.post("/createOrder", checkAuthMiddleware, orderControllers.createOrder);
 
 router.get("/fetchOrders", checkAuthMiddleware, orderControllers.fetchOrders);
 
+router.get(
+  "/fetchOrdersFront",
+  checkAuthMiddleware,
+  orderControllers.fetchOrdersFront
+);
+
 router.get("/fetchOrder", checkAuthMiddleware, orderControllers.fetchOrder);
 
 router.post("/cancelOrder", checkAuthMiddleware, orderControllers.cancelOrder);

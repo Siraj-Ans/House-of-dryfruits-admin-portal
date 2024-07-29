@@ -83,6 +83,29 @@ exports.fetchOrders = (req, res) => {
   fetchOrdersFromDB();
 };
 
+exports.fetchOrdersFront = (req, res) => {
+  async function fetchOrdersFrontFromDB() {
+    try {
+      const userId = req.query.userId;
+
+      const orders = await Order.find({
+        user: userId,
+      });
+
+      res.status(200).json({
+        message: "Successfully fetched the orders!",
+        orders: orders,
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to fetch orders!",
+      });
+    }
+  }
+
+  fetchOrdersFrontFromDB();
+};
+
 exports.fetchOrder = (req, res) => {
   async function fetchOrderFromDB() {
     try {

@@ -80,6 +80,12 @@
       </div>
 
       <label
+        [ngClass]="{
+          borderBlink:
+            imageFiles.length === 0 &&
+            productForm.controls['priceInPKR'].touched
+        }"
+        (click)="onTouched()"
         for="photos"
         type="button"
         multiple
@@ -103,12 +109,11 @@
     </div>
     <p
       *ngIf="
-        productForm.get('productImages')?.invalid &&
-        productForm.get('productImages')?.touched
+        productForm.get('productImages')?.touched && imageFiles.length === 0
       "
       class="text-red-600 font-medium"
     >
-      Invalid image type.
+      Please select atleast one image!
     </p>
   </div>
 
@@ -130,7 +135,7 @@
     ></textarea>
   </div>
   <div class="flex flex-col gap-1">
-    <label class="font-medium" for="priceInPKR">Price (in PKR)</label>
+    <label class="font-medium" for="priceInPKR">Price (in PKR)(per KG)</label>
     <input
       (change)="onChangePrice($event)"
       [ngClass]="{
@@ -159,8 +164,12 @@
       Cancel
     </button>
     <button
-      [disabled]="productForm.invalid"
-      [ngClass]="productForm.invalid ? 'invalid-save' : 'valid-save'"
+      [disabled]="imageFiles.length === 0 || productForm.invalid"
+      [ngClass]="
+        imageFiles.length === 0 || productForm.invalid
+          ? 'invalid-save'
+          : 'valid-save'
+      "
       type="submit"
       class="font-medium text-sm w-fit text-white px-2 py-1 rounded-md bg-green-500 bg-gradient-to-r hover:from-green-500 hover:to-green-900 lg:text-base lg:px-3 lg:py-2"
     >

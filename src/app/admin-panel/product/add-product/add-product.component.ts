@@ -89,7 +89,13 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.router.navigate(['adminpanel/products']);
   }
 
+  onTouched(): void {
+    this.productForm.controls['productImages'].markAsTouched;
+  }
+
   onImagePreview(event: Event): void {
+    if (this.imageFiles.length > 0) console.log('greater');
+
     if ((<HTMLInputElement>event.target).files!.length > 5)
       return this.toastr.showError(
         'You cannot select more than 5 pictures',
@@ -145,6 +151,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
 
   onDeleteImage(index: number): void {
     this.imagePaths.splice(index, 1);
+    this.imageFiles.splice(index, 1);
   }
 
   onAddProduct(): void {

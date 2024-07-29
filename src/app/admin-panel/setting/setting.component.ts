@@ -15,6 +15,8 @@ import { SettingService } from './setting.service';
 import { Product } from '../product/product.model';
 import { Setting } from './Setting.model';
 
+import { positiveNumberValidator } from '../../shared/positive-number.validator';
+
 @Component({
   selector: 'app-setting',
   standalone: true,
@@ -41,7 +43,7 @@ export class SettingComponent implements OnInit, OnDestroy {
 
     this.settingForm = this.fb.group({
       featuredProduct: [null, [Validators.required]],
-      shippingFee: [null, Validators.required],
+      shippingFee: [null, [Validators.required, positiveNumberValidator()]],
     });
 
     this.settingService.getProducts();

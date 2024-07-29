@@ -44,7 +44,7 @@
       <label
         class="text-sm font-medium text-light-purple lg:text-base"
         for="shippingFee"
-        >Shipping fee</label
+        >Shipping fee(Per KG)</label
       >
       <input
         id="shippingFee"
@@ -58,6 +58,10 @@
         class="text-light-purple text-sm px-2 py-1 rounded w-44 font-medium border-2 border-gray-300 lg:text-base lg:w-56"
         type="number"
       />
+      @if(settingForm.controls['shippingFee'].value < 0) {
+      <p class="text-red-600 italic font-bold">Please add a positive number!</p>
+
+      }
     </div>
     <div class="flex gap-4 items-center">
       <button

@@ -3,8 +3,10 @@ const WishList = require("../models/whishlist");
 exports.saveWishedProduct = (req, res) => {
   async function saveWishedProductOnDB() {
     try {
+      console.log(req.body);
       const exists = await WishList.findOne({
         product: req.body.productId,
+        user: req.body.userId,
       });
 
       if (exists)
@@ -24,6 +26,7 @@ exports.saveWishedProduct = (req, res) => {
         wishedProduct: result,
       });
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Server failed to add the product to wishlist.",
       });
