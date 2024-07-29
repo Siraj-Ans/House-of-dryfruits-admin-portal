@@ -56,7 +56,7 @@ exports.fetchCategories = (req, res) => {
       });
     } catch {
       res.status(500).json({
-        message: "Server failed to create admin!",
+        message: "Server failed to fetch categories!",
       });
     }
   }
@@ -113,14 +113,23 @@ exports.updateCategory = (req, res) => {
         _id: req.body.id,
       });
 
+      if (!category)
+        return res.status(404).json({
+          message: "Please add category before editing!",
+        });
+
       let updated = false;
 
       if (req.body.categoryName !== category.categoryName) {
         updated = true;
-        console.log("1");
-      } else if (req.body.parent != category.parent) {
-        console.log("2");
+      } else if (!category.parent && req.body.parent) {
         updated = true;
+      } else if (category.parent && !req.body.parent) {
+        updated = true;
+      } else if (category.parent && req.body.parent) {
+        if (category.parent.toString() !== req.body.parent) {
+          updated = true;
+        }
       }
 
       if (!updated)
@@ -145,9 +154,14 @@ exports.updateCategory = (req, res) => {
         result = await Category.updateOne(
           { _id: req.body.id },
           {
-            _id: req.body.id,
-            categoryName: req.body.categoryName,
-            properties: req.body.properties,
+            $set: {
+              _id: req.body.id,
+              categoryName: req.body.categoryName,
+              properties: req.body.properties,
+            },
+            $unset: {
+              parent: "",
+            },
           }
         );
       }
@@ -155,7 +169,8 @@ exports.updateCategory = (req, res) => {
       res.status(200).json({
         message: "Successfully updated the category",
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Server failed to update the category!",
       });

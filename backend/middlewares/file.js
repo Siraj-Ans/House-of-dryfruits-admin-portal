@@ -4,6 +4,7 @@ const MIME_TYPE = {
   "image/jpeg": "jpg",
   "image/jpg": "jpg",
   "image/png": "png",
+  "image/svg+xml": "svg+xml",
 };
 
 const storage = multer.memoryStorage();
@@ -27,7 +28,12 @@ const prepareFilesForS3Upload = (req, res, next) => {
     originalname: file.originalname,
     mimetype: file.mimetype,
     buffer: file.buffer,
-    filename: file.originalname.toLowerCase().split(" ").join("-"),
+    filename:
+      file.originalname.toLowerCase().split(" ").join("-") +
+      "-" +
+      Date.now() +
+      "." +
+      MIME_TYPE[file.mimetype],
   }));
 
   next();

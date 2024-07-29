@@ -127,14 +127,20 @@ exports.fetchFeaturedProduct = (req, res) => {
         name: "Featured Product",
       });
 
-      const featuredProduct = await Product.findOne({
-        _id: result.value,
-      });
+      if (!result)
+        return res.status(200).json({
+          message: "No featured product found!",
+        });
+      else {
+        const featuredProduct = await Product.findOne({
+          _id: result.value,
+        });
 
-      res.status(200).json({
-        message: "successfully fetched the featured product!",
-        featuredProduct: featuredProduct,
-      });
+        res.status(200).json({
+          message: "successfully fetched the featured product!",
+          featuredProduct: featuredProduct,
+        });
+      }
     } catch {
       res.status(500).json({
         message: "Server failed to fetch featured product!",

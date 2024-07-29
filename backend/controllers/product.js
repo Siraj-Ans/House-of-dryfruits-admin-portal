@@ -1,6 +1,7 @@
-const Product = require("../../backend/models/product");
-const WishList = require("../../backend/models/whishlist");
-const Setting = require("../../backend/models/setting");
+const Product = require("../models/product");
+const WishList = require("../models/whishlist");
+const Review = require("../models/review");
+const Setting = require("../models/setting");
 
 const { uploadMultipleFiles } = require("../s3");
 const { deleteFileFromS3 } = require("../s3");
@@ -77,19 +78,9 @@ exports.updateProduct = (req, res) => {
         existingImageNames.push(objectKey);
       }
 
-      let newFiles = [];
-      let oldFiles = [];
+      let newFiles = req.files;
       let toBeRemoved = [];
       let toBeAddedBack = [];
-
-      for (let i = 0; i < req.files.length; i++) {
-        if (imageNames.includes(req.files[i].filename)) {
-          const index = imageNames.indexOf(req.files[i].filename);
-          oldFiles.push(product.productImages[index]);
-        } else {
-          newFiles.push(req.files[i]);
-        }
-      }
 
       imageNames.forEach((imageName, index) => {
         if (!existingImageNames.includes(imageName)) {
@@ -100,7 +91,7 @@ exports.updateProduct = (req, res) => {
       });
 
       for (let i = 0; i < toBeRemoved.length; i++) {
-        const s3Result = await deleteFileFromS3(toBeRemoved[i]);
+        await deleteFileFromS3(toBeRemoved[i]);
       }
 
       const s3Result = await uploadMultipleFiles(newFiles);
@@ -157,13 +148,29 @@ exports.fetchProducts = (req, res) => {
 exports.fetchProductsFront = (req, res) => {
   async function getProductsFrontFromDB() {
     try {
-      const products = await Product.find();
+      const pageSize = req.query.pageSize;
+      const currentPage = req.query.currentPage;
+      const productsQuery = Product.find();
+      let productsCount = await Product.find();
+      productsCount = productsCount.length;
+
+      let products = [];
+
+      if (pageSize && currentPage) {
+        products = await productsQuery
+          .skip(pageSize * (currentPage - 1))
+          .limit(pageSize);
+      } else {
+        products = await productsQuery.find();
+      }
 
       res.status(200).json({
         message: "Successfully fetched the products!",
         products: products,
+        productsCount: productsCount,
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Server failed to fetch the products!",
       });
@@ -382,6 +389,10 @@ exports.deleteProduct = (req, res) => {
         }
 
       await WishList.deleteOne({
+        product: productID,
+      });
+
+      await Review.deleteMany({
         product: productID,
       });
 

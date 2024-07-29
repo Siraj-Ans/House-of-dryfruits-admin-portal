@@ -20,6 +20,7 @@ const orderSchema = mongoose.Schema(
     paid: { type: Boolean, required: true },
     fullfilled: { type: String, required: true },
     productInfo: { type: [Object], required: true },
+    completed: { type: Boolean, required: true },
     trackingId: { type: String },
     address2: { type: String },
   },

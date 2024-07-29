@@ -13,4 +13,10 @@ router.post("/cancelOrder", checkAuthMiddleware, orderControllers.cancelOrder);
 
 router.put("/updateOrder", checkAuthMiddleware, orderControllers.updateOrder);
 
+router.put(
+  "/markOrderAsCompleted",
+  checkAuthMiddleware,
+  orderControllers.markOrderAsCompleted
+);
+
 module.exports = router;

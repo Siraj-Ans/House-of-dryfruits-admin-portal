@@ -17,6 +17,7 @@ exports.createOrder = (req, res) => {
         productInfo: req.body.productInfo,
         paid: req.body.paid,
         fullfilled: req.body.fullfilled,
+        completed: req.body.completed,
         address2: req.body.address2,
       });
 
@@ -139,4 +140,48 @@ exports.updateOrder = (req, res) => {
   }
 
   setOrderPaidOnDB();
+};
+
+exports.markOrderAsCompleted = (req, res) => {
+  async function markOrderAsCompletedOnDB() {
+    try {
+      const orderId = req.body.orderId;
+
+      const order = await Order.findOne({
+        _id: orderId,
+      });
+
+      if (!order.paid)
+        return res.status(400).json({
+          message: "Order is not paid!",
+        });
+
+      if (order.fullfilled !== "delivered")
+        return res.status(400).json({
+          message: "Order is not delivered!",
+        });
+
+      console.log(
+        await Order.updateOne(
+          {
+            _id: orderId,
+          },
+          {
+            completed: true,
+          }
+        )
+      );
+
+      res.status(200).json({
+        message: "Successfully marked order as completed!",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: "Server failed to marke the order as completed!",
+      });
+    }
+  }
+
+  markOrderAsCompletedOnDB();
 };
