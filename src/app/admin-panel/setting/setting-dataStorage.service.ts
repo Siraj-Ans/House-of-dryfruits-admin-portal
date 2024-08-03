@@ -111,7 +111,6 @@ export class SettingDataStorageServiceService {
   saveShippingFee(settings: Setting): Observable<{
     message: string;
   }> {
-    console.log('trig');
     return this.http
       .post<SaveShippingFee>(
         BACKEND_URL + '/settings/saveShippingFee',

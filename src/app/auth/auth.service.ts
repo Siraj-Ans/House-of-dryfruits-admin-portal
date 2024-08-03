@@ -51,7 +51,6 @@ export class AuthService {
         }
       },
       error: (err) => {
-        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -143,7 +142,6 @@ export class AuthService {
   }
 
   logOut(): void {
-    console.log('trig');
     this.removeAuthData();
     this.isAuthenticated = false;
     clearTimeout(this.timerExpiration);

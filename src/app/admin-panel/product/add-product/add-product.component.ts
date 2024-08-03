@@ -94,8 +94,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
   }
 
   onImagePreview(event: Event): void {
-    if (this.imageFiles.length > 0) console.log('greater');
-
     if ((<HTMLInputElement>event.target).files!.length > 5)
       return this.toastr.showError(
         'You cannot select more than 5 pictures',
@@ -109,9 +107,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
         }
       );
 
-    console.log(
-      this.imageFiles.length + (<HTMLInputElement>event.target).files!.length
-    );
+    this.imageFiles.length + (<HTMLInputElement>event.target).files!.length;
+
     if (
       this.imageFiles.length + (<HTMLInputElement>event.target).files!.length >
       5

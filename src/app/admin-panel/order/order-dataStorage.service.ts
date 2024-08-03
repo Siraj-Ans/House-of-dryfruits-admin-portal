@@ -86,8 +86,6 @@ export class OrderDataStorageService {
   ): Observable<{
     message: string;
   }> {
-    console.log(paidStatus, shipmentStatus, trackingId);
-
     return this.http.put<UpdateOrderPaidResponse>(BACKEND_URL + 'updateOrder', {
       paidStatus: paidStatus,
       shipmentStatus: shipmentStatus,

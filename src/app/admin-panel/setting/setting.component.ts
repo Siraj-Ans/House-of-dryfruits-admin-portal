@@ -84,10 +84,6 @@ export class SettingComponent implements OnInit, OnDestroy {
   onSubmitSetting(): void {
     if (this.settingForm?.invalid) return;
 
-    console.log(
-      typeof this.settingForm.value.shippingFee,
-      typeof this.settingForm.value.featuredProduct
-    );
     let featuredProduct;
     let shippingFee;
 

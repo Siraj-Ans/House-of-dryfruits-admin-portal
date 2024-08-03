@@ -50,11 +50,9 @@ export class SettingService {
   getSettings(): void {
     this.settingDataStorageService.fetchSettings().subscribe({
       next: (res) => {
-        console.log(res);
         this.updateSettings.next(res.settings);
       },
       error: (err) => {
-        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -89,7 +87,6 @@ export class SettingService {
         });
       },
       error: (err) => {
-        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
@@ -118,7 +115,6 @@ export class SettingService {
     this.settingDataStorageService.saveShippingFee(setting).subscribe({
       next: (res) => {},
       error: (err) => {
-        console.log(err);
         if (!err.status)
           this.toastr.showError('Server failed!', '', {
             toastClass: 'error-toast',
