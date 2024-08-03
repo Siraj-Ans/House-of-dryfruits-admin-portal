@@ -28,7 +28,6 @@ exports.createOrder = (req, res) => {
         order: result,
       });
     } catch {
-      console.log(err);
       res.status(500).json({
         message: "server failed to create order!",
       });
@@ -53,8 +52,7 @@ exports.cancelOrder = (req, res) => {
         message: "Successfully removed the the order",
         order: result,
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "server failed to remove the order!",
       });
@@ -139,17 +137,15 @@ exports.updateOrder = (req, res) => {
       const paidStatus = req.body.paidStatus;
       const shipmentStatus = req.body.shipmentStatus;
 
-      console.log(
-        await Order.updateOne(
-          {
-            _id: orderId,
-          },
-          {
-            paid: paidStatus === "unpaid" ? false : true,
-            trackingId: trackingId,
-            fullfilled: shipmentStatus,
-          }
-        )
+      await Order.updateOne(
+        {
+          _id: orderId,
+        },
+        {
+          paid: paidStatus === "unpaid" ? false : true,
+          trackingId: trackingId,
+          fullfilled: shipmentStatus,
+        }
       );
 
       res.status(200).json({
@@ -184,22 +180,19 @@ exports.markOrderAsCompleted = (req, res) => {
           message: "Order is not delivered!",
         });
 
-      console.log(
-        await Order.updateOne(
-          {
-            _id: orderId,
-          },
-          {
-            completed: true,
-          }
-        )
+      await Order.updateOne(
+        {
+          _id: orderId,
+        },
+        {
+          completed: true,
+        }
       );
 
       res.status(200).json({
         message: "Successfully marked order as completed!",
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(400).json({
         message: "Server failed to marke the order as completed!",
       });

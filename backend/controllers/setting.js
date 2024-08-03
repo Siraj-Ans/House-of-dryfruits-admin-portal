@@ -88,8 +88,7 @@ exports.saveShippingFee = (req, res) => {
       res.status(200).json({
         message: "successfully saved the shipping fee!",
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "Server failed to save the shipping fee!",
       });
@@ -130,7 +129,6 @@ exports.fetchFeaturedProduct = (req, res) => {
           message: "No featured product found!",
         });
       else {
-        console.log(result.value);
         const featuredProduct = await Product.findOne({
           _id: result.value.toString(),
         });
@@ -140,8 +138,7 @@ exports.fetchFeaturedProduct = (req, res) => {
           featuredProduct: featuredProduct,
         });
       }
-    } catch (err) {
-      console.log("err: ", err);
+    } catch {
       res.status(500).json({
         message: "Server failed to fetch the featured product!",
       });
@@ -162,8 +159,7 @@ exports.fetchShippingFee = (req, res) => {
         message: "Successfully fetched the shipping fee",
         shippingFee: +result.value,
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "Server failed to fetch shipping fee",
       });

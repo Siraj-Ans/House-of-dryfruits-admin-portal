@@ -26,9 +26,31 @@
               adminForm.controls['userName'].touched
           }"
           placeholder="Username"
+          pattern="^[a-z]+$"
           class="px-2 rounded font-medium border-2 border-gray-300 lg:px-3 lg:py-1"
           type="text"
         />
+        @if(adminForm.controls['userName'].invalid &&
+        adminForm.controls['userName'].touched) {
+        <ul class="">
+          <li
+            class="text-gray-500 text-wrap w-full leading-1 font-bold text-xs"
+          >
+            UserName should not contain small
+          </li>
+          <li
+            class="text-gray-500 w-full text-wrap leading-1 font-bold text-xs"
+          >
+            letters, special characters, spaces and
+          </li>
+          <li
+            class="text-gray-500 w-full text-wrap leading-1 font-bold text-xs"
+          >
+            be min 5 characters
+          </li>
+        </ul>
+
+        }
       </div>
       <div class="flex flex-col">
         <label
@@ -40,6 +62,7 @@
           id="password"
           name="password"
           formControlName="password"
+          pattern="^\S{7,}$"
           [ngClass]="{
             borderBlink:
               adminForm.controls['password'].invalid &&
@@ -49,6 +72,22 @@
           class="px-2 rounded font-medium border-2 border-gray-300 lg:px-3 lg:py-1"
           type="password"
         />
+        @if(adminForm.controls['password'].invalid &&
+        adminForm.controls['password'].touched) {
+        <ul class="">
+          <li
+            class="text-gray-500 text-wrap w-full leading-1 font-bold text-xs"
+          >
+            Password should not contain spaces
+          </li>
+          <li
+            class="text-gray-500 w-full text-wrap leading-1 font-bold text-xs"
+          >
+            and be min 7 characters
+          </li>
+        </ul>
+
+        }
       </div>
     </div>
     <div class="flex items-end">

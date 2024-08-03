@@ -85,8 +85,6 @@ export class ProductService {
         );
 
         this.getProducts();
-        // this.products.push(product);
-        // this.updateProducts.next(this.products.slice());
         this.updateEditAddMode.next(false);
         this.updateLoading.next(false);
         this.router.navigate(['adminpanel/products']);
@@ -117,10 +115,10 @@ export class ProductService {
   }
 
   removeProduct(productID: string, index: number): void {
+    this.updateLoading.next(true);
+
     this.productDataStorageService.deleteProduct(productID).subscribe({
       next: (responseData) => {
-        // this.products.splice(index, 1);
-        // this.updateProducts.next(this.products.slice());
         this.getProducts();
         this.toastr.showSuccess('Product removed!', '', {
           toastClass: 'success-toast',
@@ -147,8 +145,11 @@ export class ProductService {
             positionClass: 'toast-top-right',
             preventDuplicates: true,
           });
+        this.updateLoading.next(false);
       },
-      complete: () => {},
+      complete: () => {
+        this.updateLoading.next(false);
+      },
     });
   }
 

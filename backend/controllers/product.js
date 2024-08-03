@@ -2,9 +2,28 @@ const Product = require("../models/product");
 const WishList = require("../models/whishlist");
 const Review = require("../models/review");
 const Setting = require("../models/setting");
+const redis = require("redis");
 
 const { uploadMultipleFiles } = require("../s3");
 const { deleteFileFromS3 } = require("../s3");
+
+const url = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
+
+const redisClient = redis.createClient({
+  url,
+  password: process.env.REDIS_KEY,
+});
+
+async function conntectToRedis() {
+  try {
+    await redisClient.connect();
+    console.log("Connected to redis successfully!");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+conntectToRedis();
 
 exports.createProduct = (req, res) => {
   async function saveProductOnDB() {
@@ -27,6 +46,8 @@ exports.createProduct = (req, res) => {
 
       const result = await product.save();
 
+      await redisClient.del("products");
+
       const newProduct = await Product.findOne({ _id: result._id }).populate(
         "productCategory"
       );
@@ -35,8 +56,7 @@ exports.createProduct = (req, res) => {
         message: "successfully created the product!",
         product: newProduct,
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "server failed to add the product!",
       });
@@ -114,6 +134,8 @@ exports.updateProduct = (req, res) => {
         }
       );
 
+      await redisClient.del("products");
+
       res.status(200).json({
         message: "Successfully updated the product!",
       });
@@ -130,7 +152,18 @@ exports.updateProduct = (req, res) => {
 exports.fetchProducts = (req, res) => {
   async function getProductsFromDB() {
     try {
+      const redisProducts = await redisClient.get("products");
+
+      if (redisProducts)
+        return res.status(200).json({
+          message: "Successfully fetched the products!",
+          products: JSON.parse(redisProducts),
+        });
+
       const products = await Product.find().populate("productCategory");
+      await redisClient.set("products", JSON.stringify(products), {
+        EX: 10 * 60,
+      });
 
       res.status(200).json({
         message: "Successfully fetched the products!",
@@ -169,8 +202,7 @@ exports.fetchProductsFront = (req, res) => {
         products: products,
         productsCount: productsCount,
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "Server failed to fetch the products!",
       });
@@ -254,7 +286,6 @@ exports.fetchCategoryProducts = (req, res) => {
 exports.fetchOldestCategoryProducts = (req, res) => {
   async function getOldestCategoryProductsFromDB() {
     try {
-      console.log("trig");
       const categoryId = req.query.categoryId;
 
       const categoryProducts = await Product.find(
@@ -354,9 +385,21 @@ exports.fetchCartProducts = (req, res) => {
 exports.fetchNewProducts = (req, res) => {
   async function getNewProductsFromDB() {
     try {
+      const redisProducts = await redisClient.get("newProducts");
+
+      if (redisProducts)
+        return res.status(200).json({
+          message: "Successfully fetched the products!",
+          products: JSON.parse(redisProducts),
+        });
+
       const products = await Product.find({}, null, {
         sort: { _id: -1 },
         limit: 10,
+      });
+
+      await redisClient.set("newProducts", JSON.stringify(products), {
+        EX: 10 * 60,
       });
 
       res.status(200).json({
@@ -405,6 +448,8 @@ exports.deleteProduct = (req, res) => {
         return res.status(500).json({
           message: "Could not delete the admin",
         });
+
+      await redisClient.del("products");
 
       res.status(200).json({
         message: "Successfully deleted the admin",

@@ -169,8 +169,7 @@ exports.updateCategory = (req, res) => {
       res.status(200).json({
         message: "Successfully updated the category",
       });
-    } catch (err) {
-      console.log(err);
+    } catch {
       res.status(500).json({
         message: "Server failed to update the category!",
       });
@@ -184,6 +183,25 @@ exports.deleteCategory = (req, res) => {
   async function removeCategoryFromDB() {
     try {
       const categoryId = req.query.categoryID;
+
+      const parentCategory = await Category.findOne({
+        parent: categoryId,
+      });
+
+      let categoryProducts = await Product.find({
+        productCategory: categoryId,
+      });
+
+      if (parentCategory)
+        categoryProducts = await Product.find({
+          productCategory: parentCategory._id,
+        });
+
+      if (categoryProducts.length !== 0) {
+        return res.status(404).json({
+          message: "Please delete category products first!",
+        });
+      }
 
       if (!categoryId)
         return res.status(400).json({

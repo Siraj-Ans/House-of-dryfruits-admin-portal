@@ -137,8 +137,6 @@ exports.fetchAccountDetails = (req, res) => {
         user: userId,
       });
 
-      console.log(accountDetails);
-
       res.status(200).json({
         message: "Successfully fetched the account details",
         accountDetails: accountDetails,

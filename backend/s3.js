@@ -37,7 +37,6 @@ exports.uploadMultipleFiles = async (files) => {
 function parseS3Url(url) {
   const urlParts = new URL(url);
   const objectKey = urlParts.pathname.substring(1);
-  console.log("objectkey: ", objectKey);
   return objectKey;
 }
 
