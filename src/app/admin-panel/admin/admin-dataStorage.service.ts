@@ -26,14 +26,11 @@ export class AdminDataStorageService {
     admin: { id: string; userName: string; dateAndTime: string };
   }> {
     return this.http
-      .post<createAdminResponse>(
-        'http://localhost:3000/api/admins/createAdmin',
-        {
-          userName: userName,
-          password: password,
-          dateAndTime: dateAndTime,
-        }
-      )
+      .post<createAdminResponse>(BACKEND_URL + 'createAdmin', {
+        userName: userName,
+        password: password,
+        dateAndTime: dateAndTime,
+      })
       .pipe(
         map((res) => {
           return {
