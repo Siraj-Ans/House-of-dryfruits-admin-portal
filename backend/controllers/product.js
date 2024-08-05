@@ -431,7 +431,7 @@ exports.deleteProduct = (req, res) => {
           await deleteFileFromS3(productImages[i]);
         }
 
-      await WishList.deleteOne({
+      await WishList.deleteMany({
         product: productID,
       });
 
