@@ -56,20 +56,21 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.updateSettingsSubscription =
       this.settingService.updateSettings.subscribe((settings) => {
         this.settings = settings;
+        console.log(this.settings);
 
         if (settings.length === 2) {
           this.settingForm.setValue({
-            featuredProduct: this.settings[0].value,
-            shippingFee: this.settings[1].value,
+            featuredProduct: this.settings[1].value,
+            shippingFee: this.settings[0].value,
           });
         } else if (settings.length === 1) {
           if (settings[0].name === 'Featured Product') {
             this.settingForm.patchValue({
-              featuredProduct: settings[0].value,
+              featuredProduct: settings[1].value,
             });
           } else {
             this.settingForm.patchValue({
-              shippingFee: settings[1].value,
+              shippingFee: settings[0].value,
             });
           }
         }
