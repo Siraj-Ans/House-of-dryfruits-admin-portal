@@ -7,6 +7,7 @@ const path = require("path");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth");
+const contactUsRoutes = require("./routes/contactUs");
 const adminRoutes = require("./routes/admin");
 const userRoutes = require("./routes/user");
 const CategoryRoutes = require("./routes/category");
@@ -52,6 +53,7 @@ app.use("/api/auth/", authRoutes);
 app.use("/api/settings/", settingRoutes);
 app.use("/api/orders/", orderRoutes);
 app.use("/api/reviews/", reviewRoutes);
+app.use("/api/contact/", contactUsRoutes);
 
 const httpServer = http.createServer(app);
 
