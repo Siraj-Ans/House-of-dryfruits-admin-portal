@@ -8,7 +8,12 @@ exports.login = (req, res) => {
         return res.status(400).json({
           message: "User not found!",
         });
-      else if (!(await User.findOne({ password: req.body.password })))
+      else if (
+        !(await User.findOne({
+          emailAddress: req.body.emailAddress,
+          password: req.body.password,
+        }))
+      )
         return res.status(400).json({
           message: "password is incorrect!",
         });
@@ -78,4 +83,51 @@ exports.signup = (req, res) => {
   }
 
   createUserOnDB();
+};
+
+exports.changePassword = (req, res) => {
+  async function changePasswordOnDB() {
+    try {
+      const user = await User.findOne({
+        emailAddress: req.body.emailAddress,
+      });
+
+      if (!user)
+        return res.status(404).json({
+          message: "User not found!",
+        });
+
+      const passwordMatch = await User.findOne({
+        emailAddress: req.body.emailAddress,
+        password: req.body.previousPassword,
+      });
+
+      if (!passwordMatch)
+        return res.status(404).json({
+          message: "last password incorrect!",
+        });
+
+      console.log(
+        await User.updateOne(
+          {
+            _id: user._id,
+          },
+          {
+            _id: user._id,
+            password: req.body.newPassword,
+          }
+        )
+      );
+
+      res.status(200).json({
+        message: "Successfully update the user password!",
+      });
+    } catch {
+      res.status(500).json({
+        message: "Server failed to change password!",
+      });
+    }
+  }
+
+  changePasswordOnDB();
 };
